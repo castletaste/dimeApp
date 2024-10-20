@@ -1,12 +1,13 @@
 {
+  "originHash" : "bf1d0935f680dcc5ab4b200631bf1cb19e513a4b9f1f1421cd48882f38f75821",
   "pins" : [
     {
       "identity" : "alamofire",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Alamofire/Alamofire",
       "state" : {
-        "revision" : "b2fa556e4e48cbf06cf8c63def138c98f4b811fa",
-        "version" : "5.8.0"
+        "revision" : "e16d3481f5ed35f0472cb93350085853d754913f",
+        "version" : "5.10.1"
       }
     },
     {
@@ -14,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ggruen/CloudKitSyncMonitor.git",
       "state" : {
-        "revision" : "8f8de8e71928df27bf023cc6ed808a8b6270a0d3",
-        "version" : "1.2.1"
+        "revision" : "f84f9c074b2c55adc7dc364a4437cfe7249ae529",
+        "version" : "1.4.1"
       }
     },
     {
@@ -23,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/simibac/ConfettiSwiftUI",
       "state" : {
-        "revision" : "8d3a15d0aa2991e0761749b767ef8d89bca6275a",
-        "version" : "1.0.1"
+        "revision" : "f45961f97bbae6fff6e2e64546fea0189425ad92",
+        "version" : "1.1.0"
       }
     },
     {
@@ -51,25 +52,16 @@
       "location" : "https://github.com/aheze/Popovers",
       "state" : {
         "branch" : "main",
-        "revision" : "05033a2a1ab619369756933803f45431eae4f6ab"
+        "revision" : "a6895602c7db1683be1c68363564de4fb09521cd"
       }
     },
     {
       "identity" : "scrollviewstyle",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/TimmysApp/ScrollViewStyle",
+      "location" : "https://github.com/AuNguyen611/ScrollViewStyle",
       "state" : {
-        "revision" : "adc7413f6b32781dc5970c54d1a734cafa230ba7",
-        "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "stools",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/TimmysApp/STools",
-      "state" : {
-        "revision" : "ea876036fc53be40f564b24d3c267b447416dc1d",
-        "version" : "1.0.81"
+        "branch" : "master",
+        "revision" : "37916db6132892494f84d2d2bfab4db4c6e7bafb"
       }
     },
     {
@@ -77,10 +69,10 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/siteline/SwiftUI-Introspect.git",
       "state" : {
-        "branch" : "master",
-        "revision" : "7ef0df639079491ee1aaf6b83b6fd4d08df80393"
+        "branch" : "main",
+        "revision" : "807f73ce09a9b9723f12385e592b4e0aaebd3336"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
