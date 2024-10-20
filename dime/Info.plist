@@ -8,7 +8,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.rafaelsoh.dime</string>
+			<string>wtf.savva.dime</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>dimeapp</string>

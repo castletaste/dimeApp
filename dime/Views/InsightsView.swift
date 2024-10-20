@@ -14,7 +14,8 @@ struct InsightsView: View {
     @FetchRequest(sortDescriptors: []) private var transactions: FetchedResults<Transaction>
 
     @State private var showTimeMenu = false
-    @AppStorage("chartTimeFrame", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var chartType = 1
+    @AppStorage("chartTimeFrame", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var chartType = 1
 
     private var didSave = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     @State private var refreshID = UUID()
@@ -31,8 +32,8 @@ struct InsightsView: View {
         }
     }
 
-//    @State private var holdingIncome = false
-//    @Namespace var animation
+    //    @State private var holdingIncome = false
+    //    @Namespace var animation
 
     var body: some View {
         if transactions.isEmpty {
@@ -44,13 +45,13 @@ struct InsightsView: View {
 
                 Text("Analyse Your Expenditure")
                     .font(.system(.title2, design: .rounded).weight(.medium))
-//                    .font(.system(size: 23.5, weight: .medium, design: .rounded))
+                    //                    .font(.system(size: 23.5, weight: .medium, design: .rounded))
                     .foregroundColor(Color.PrimaryText.opacity(0.8))
                     .multilineTextAlignment(.center)
 
                 Text("As transactions start piling up")
                     .font(.system(.body, design: .rounded).weight(.medium))
-//                    .font(.system(size: 18, weight: .medium, design: .rounded))
+                    //                    .font(.system(size: 18, weight: .medium, design: .rounded))
                     .foregroundColor(Color.SubtitleText.opacity(0.7))
                     .multilineTextAlignment(.center)
             }
@@ -84,16 +85,20 @@ struct InsightsView: View {
                         .foregroundColor(Color.PrimaryText.opacity(0.9))
                         .background(Color.Outline, in: RoundedRectangle(cornerRadius: 6))
                     }
-                    .popover(present: $showTimeMenu, attributes: {
-                        $0.position = .absolute(
-                            originAnchor: .bottomRight,
-                            popoverAnchor: .topRight
-                        )
-                        $0.rubberBandingMode = .none
-                        $0.sourceFrameInset = UIEdgeInsets(top: 0, left: 0, bottom: -10, right: 0)
-                        $0.presentation.animation = .easeInOut(duration: 0.2)
-                        $0.dismissal.animation = .easeInOut(duration: 0.3)
-                    }) {
+                    .popover(
+                        present: $showTimeMenu,
+                        attributes: {
+                            $0.position = .absolute(
+                                originAnchor: .bottomRight,
+                                popoverAnchor: .topRight
+                            )
+                            $0.rubberBandingMode = .none
+                            $0.sourceFrameInset = UIEdgeInsets(
+                                top: 0, left: 0, bottom: -10, right: 0)
+                            $0.presentation.animation = .easeInOut(duration: 0.2)
+                            $0.dismissal.animation = .easeInOut(duration: 0.3)
+                        }
+                    ) {
                         ChartTimePickerView(showMenu: $showTimeMenu)
                     }
                 }
@@ -126,12 +131,14 @@ struct HorizontalPieChartView: View {
     @FetchRequest private var allCategories: FetchedResults<Category>
     @FetchRequest private var transactions: FetchedResults<Transaction>
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
 
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
     var income: Bool
     var date: Date
@@ -195,7 +202,9 @@ struct HorizontalPieChartView: View {
                 continue
             }
 
-            let newCategory = PowerCategory(id: category.id ?? UUID(), category: category, percent: holdingTotal / total, amount: holdingTotal)
+            let newCategory = PowerCategory(
+                id: category.id ?? UUID(), category: category, percent: holdingTotal / total,
+                amount: holdingTotal)
 
             holding.append(newCategory)
         }
@@ -221,30 +230,41 @@ struct HorizontalPieChartView: View {
                                 if category.percent < 0.005 {
                                     EmptyView()
                                 } else {
-                                    AnimatedHorizontalBarGraph(category: category, index: categories.firstIndex(of: category) ?? 0)
-                                        .frame(width: (proxy.size.width * (1.0 - (0.015 * Double(categories.count - 1)))) * category.percent)
-                                        .onTapGesture {
-                                            withAnimation(.easeInOut) {
-                                                if categoryFilter == category.category {
-                                                    selectedDate = nil
-                                                    categoryFilterMode = false
-                                                    categoryFilter = nil
-                                                } else {
-                                                    selectedDate = nil
-                                                    categoryFilterMode = true
-                                                    categoryFilter = category.category
-                                                    chosenAmount = category.percent * total
-                                                    chosenName = category.category.wrappedName
-                                                }
+                                    AnimatedHorizontalBarGraph(
+                                        category: category,
+                                        index: categories.firstIndex(of: category) ?? 0
+                                    )
+                                    .frame(
+                                        width: (proxy.size.width
+                                            * (1.0 - (0.015 * Double(categories.count - 1))))
+                                            * category.percent
+                                    )
+                                    .onTapGesture {
+                                        withAnimation(.easeInOut) {
+                                            if categoryFilter == category.category {
+                                                selectedDate = nil
+                                                categoryFilterMode = false
+                                                categoryFilter = nil
+                                            } else {
+                                                selectedDate = nil
+                                                categoryFilterMode = true
+                                                categoryFilter = category.category
+                                                chosenAmount = category.percent * total
+                                                chosenName = category.category.wrappedName
                                             }
                                         }
-                                        .opacity(categoryFilterMode ? (categoryFilter == category.category ? 1 : 0.5) : 1)
-                                        .overlay {
-                                            if categoryFilterMode && categoryFilter == category.category {
-                                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                                    .stroke(Color.DarkBackground, lineWidth: 1.5)
-                                            }
+                                    }
+                                    .opacity(
+                                        categoryFilterMode
+                                            ? (categoryFilter == category.category ? 1 : 0.5) : 1
+                                    )
+                                    .overlay {
+                                        if categoryFilterMode && categoryFilter == category.category
+                                        {
+                                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                                .stroke(Color.DarkBackground, lineWidth: 1.5)
                                         }
+                                    }
                                 }
                             }
                         }
@@ -258,7 +278,12 @@ struct HorizontalPieChartView: View {
                     VStack(spacing: 10) {
                         ForEach(categories, id: \.self) { category in
                             if !categoryFilterMode || categoryFilter == category.category {
-                                let boxColor = category.category.income ? Color(hex: Color.colorArray[categories.firstIndex(of: category) ?? 0]) : Color(hex: category.category.wrappedColour)
+                                let boxColor =
+                                    category.category.income
+                                    ? Color(
+                                        hex: Color.colorArray[
+                                            categories.firstIndex(of: category) ?? 0])
+                                    : Color(hex: category.category.wrappedColour)
 
                                 HStack(spacing: 10) {
 
@@ -267,11 +292,19 @@ struct HorizontalPieChartView: View {
                                         .foregroundColor(Color.PrimaryText)
                                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                                    Text("\(currencySymbol)\(category.amount, specifier: (showCents && category.amount < 100) ? "%.2f" : "%.0f")")
-                                        .font(.system(categoryFilterMode && categoryFilter == category.category ? .title3 : .body, design: .rounded).weight(.medium))
-                                        .foregroundColor(Color.SubtitleText)
-                                        .lineLimit(1)
-                                        .layoutPriority(1)
+                                    Text(
+                                        "\(currencySymbol)\(category.amount, specifier: (showCents && category.amount < 100) ? "%.2f" : "%.0f")"
+                                    )
+                                    .font(
+                                        .system(
+                                            categoryFilterMode
+                                                && categoryFilter == category.category
+                                                ? .title3 : .body, design: .rounded
+                                        ).weight(.medium)
+                                    )
+                                    .foregroundColor(Color.SubtitleText)
+                                    .lineLimit(1)
+                                    .layoutPriority(1)
 
                                     if categoryFilterMode && categoryFilter == category.category {
                                         Button {
@@ -282,7 +315,10 @@ struct HorizontalPieChartView: View {
                                             }
                                         } label: {
                                             Image(systemName: "xmark")
-                                                .font(.system(.footnote, design: .rounded).weight(.bold))
+                                                .font(
+                                                    .system(.footnote, design: .rounded).weight(
+                                                        .bold)
+                                                )
                                                 .foregroundColor(Color.SubtitleText)
                                                 .padding(5)
                                                 .background(Color.SecondaryBackground, in: Circle())
@@ -291,17 +327,39 @@ struct HorizontalPieChartView: View {
                                     } else {
 
                                         Text("\(category.percent * 100, specifier: "%.0f")%")
-                                            .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                                            .font(
+                                                .system(.subheadline, design: .rounded).weight(
+                                                    .semibold)
+                                            )
                                             .foregroundColor(boxColor)
                                             .padding(.vertical, 3)
                                             .frame(width: percentWidth)
-                                            .background(boxColor.opacity(0.23), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                            .background(
+                                                boxColor.opacity(0.23),
+                                                in: RoundedRectangle(
+                                                    cornerRadius: 8, style: .continuous))
                                     }
                                 }
-                                .padding(.vertical, categoryFilterMode && categoryFilter == category.category ? 10 : 5)
-                                .padding(.horizontal, categoryFilterMode && categoryFilter == category.category ? 10 : 0)
-                                .background(RoundedRectangle(cornerRadius: 12).fill(categoryFilterMode && categoryFilter == category.category ? Color.TertiaryBackground : Color.PrimaryBackground))
-                                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(categoryFilterMode && categoryFilter == category.category ? Color.Outline : Color.clear, lineWidth: 1.3))
+                                .padding(
+                                    .vertical,
+                                    categoryFilterMode && categoryFilter == category.category
+                                        ? 10 : 5
+                                )
+                                .padding(
+                                    .horizontal,
+                                    categoryFilterMode && categoryFilter == category.category
+                                        ? 10 : 0
+                                )
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12).fill(
+                                        categoryFilterMode && categoryFilter == category.category
+                                            ? Color.TertiaryBackground : Color.PrimaryBackground)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12).strokeBorder(
+                                        categoryFilterMode && categoryFilter == category.category
+                                            ? Color.Outline : Color.clear, lineWidth: 1.3)
+                                )
                                 .fixedSize(horizontal: false, vertical: true)
                                 .contentShape(Rectangle())
                                 .drawingGroup()
@@ -327,7 +385,11 @@ struct HorizontalPieChartView: View {
         }
     }
 
-    init(date: Date, categoryFilter: Binding<Category?>?, categoryFilterMode: Binding<Bool>, selectedDate: Binding<Date?>?, chosenAmount: Binding<Double>, chosenName: Binding<String>, type: ChartTimeFrame, income: Bool) {
+    init(
+        date: Date, categoryFilter: Binding<Category?>?, categoryFilterMode: Binding<Bool>,
+        selectedDate: Binding<Date?>?, chosenAmount: Binding<Double>, chosenName: Binding<String>,
+        type: ChartTimeFrame, income: Bool
+    ) {
         self.date = date
         self.income = income
         _categoryFilter = categoryFilter ?? Binding.constant(nil)
@@ -338,53 +400,64 @@ struct HorizontalPieChartView: View {
 
         // fetching categories
 
-        _allCategories = FetchRequest<Category>(sortDescriptors: [], predicate: NSPredicate(format: "income = %d", income))
+        _allCategories = FetchRequest<Category>(
+            sortDescriptors: [], predicate: NSPredicate(format: "income = %d", income))
 
         // fetching transactions
 
-        let startPredicate = NSPredicate(format: "%K >= %@", #keyPath(Transaction.date), date as CVarArg)
+        let startPredicate = NSPredicate(
+            format: "%K >= %@", #keyPath(Transaction.date), date as CVarArg)
         let incomePredicate = NSPredicate(format: "income = %d", income)
 
         let endPredicate: NSPredicate
 
         var calendar = Calendar(identifier: .gregorian)
 
-        calendar.firstWeekday = UserDefaults(suiteName: "group.com.rafaelsoh.dime")!.integer(forKey: "firstWeekday")
+        calendar.firstWeekday = UserDefaults(suiteName: "group.wtf.savva.dime")!.integer(
+            forKey: "firstWeekday")
         calendar.minimumDaysInFirstWeek = 4
 
         switch type {
         case .week:
             if calendar.isDate(date, equalTo: Date.now, toGranularity: .weekOfYear) {
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
             } else {
                 let next = calendar.date(byAdding: .day, value: 7, to: date) ?? Date.now
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
             }
         case .month:
             let next = calendar.date(byAdding: .month, value: 1, to: date) ?? Date.now
 
             if next > Date.now {
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
             } else {
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
             }
         case .year:
             if calendar.isDate(date, equalTo: Date.now, toGranularity: .year) {
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
             } else {
                 let next = calendar.date(byAdding: .year, value: 1, to: date) ?? Date.now
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
             }
         }
 
-        let andPredicate = NSCompoundPredicate(type: .and, subpredicates: [startPredicate, endPredicate, incomePredicate])
+        let andPredicate = NSCompoundPredicate(
+            type: .and, subpredicates: [startPredicate, endPredicate, incomePredicate])
 
         _transactions = FetchRequest<Transaction>(sortDescriptors: [], predicate: andPredicate)
     }
 }
 
 struct FilteredCategoryInsightsView: View {
-    @SectionedFetchRequest<Date?, Transaction> private var transactions: SectionedFetchResults<Date?, Transaction>
+    @SectionedFetchRequest<Date?, Transaction> private var transactions:
+        SectionedFetchResults<Date?, Transaction>
 
     var body: some View {
         VStack(spacing: 30) {
@@ -399,53 +472,68 @@ struct FilteredCategoryInsightsView: View {
 
     init(category: Category?, date: Date, type: ChartTimeFrame) {
         if let unwrappedCategory = category {
-            let startPredicate = NSPredicate(format: "%K >= %@", #keyPath(Transaction.date), date as CVarArg)
-            let categoryPredicate = NSPredicate(format: "%K == %@", #keyPath(Transaction.category), unwrappedCategory)
+            let startPredicate = NSPredicate(
+                format: "%K >= %@", #keyPath(Transaction.date), date as CVarArg)
+            let categoryPredicate = NSPredicate(
+                format: "%K == %@", #keyPath(Transaction.category), unwrappedCategory)
             let incomePredicate = NSPredicate(format: "income = %d", unwrappedCategory.income)
 
             let endPredicate: NSPredicate
 
             var calendar = Calendar(identifier: .gregorian)
 
-            calendar.firstWeekday = UserDefaults(suiteName: "group.com.rafaelsoh.dime")!.integer(forKey: "firstWeekday")
+            calendar.firstWeekday = UserDefaults(suiteName: "group.wtf.savva.dime")!.integer(
+                forKey: "firstWeekday")
             calendar.minimumDaysInFirstWeek = 4
 
             switch type {
             case .week:
                 if calendar.isDate(date, equalTo: Date.now, toGranularity: .weekOfYear) {
-                    endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                    endPredicate = NSPredicate(
+                        format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
                 } else {
                     let next = calendar.date(byAdding: .day, value: 7, to: date) ?? Date.now
-                    endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                    endPredicate = NSPredicate(
+                        format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
                 }
             case .month:
                 if calendar.isDate(date, equalTo: Date.now, toGranularity: .month) {
-                    endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                    endPredicate = NSPredicate(
+                        format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
                 } else {
                     let next = calendar.date(byAdding: .month, value: 1, to: date) ?? Date.now
-                    endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                    endPredicate = NSPredicate(
+                        format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
                 }
             case .year:
                 if calendar.isDate(date, equalTo: Date.now, toGranularity: .year) {
-                    endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                    endPredicate = NSPredicate(
+                        format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
                 } else {
                     let next = calendar.date(byAdding: .year, value: 1, to: date) ?? Date.now
-                    endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                    endPredicate = NSPredicate(
+                        format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
                 }
             }
 
-            let andPredicate = NSCompoundPredicate(type: .and, subpredicates: [startPredicate, endPredicate, categoryPredicate, incomePredicate])
+            let andPredicate = NSCompoundPredicate(
+                type: .and,
+                subpredicates: [startPredicate, endPredicate, categoryPredicate, incomePredicate])
 
-            _transactions = SectionedFetchRequest<Date?, Transaction>(sectionIdentifier: \.day, sortDescriptors: [
-                SortDescriptor(\.day, order: .reverse),
-                SortDescriptor(\.date, order: .reverse)
-            ], predicate: andPredicate)
+            _transactions = SectionedFetchRequest<Date?, Transaction>(
+                sectionIdentifier: \.day,
+                sortDescriptors: [
+                    SortDescriptor(\.day, order: .reverse),
+                    SortDescriptor(\.date, order: .reverse),
+                ], predicate: andPredicate)
 
         } else {
-            _transactions = SectionedFetchRequest<Date?, Transaction>(sectionIdentifier: \.day, sortDescriptors: [
-                SortDescriptor(\.day, order: .reverse),
-                SortDescriptor(\.date, order: .reverse)
-            ])
+            _transactions = SectionedFetchRequest<Date?, Transaction>(
+                sectionIdentifier: \.day,
+                sortDescriptors: [
+                    SortDescriptor(\.day, order: .reverse),
+                    SortDescriptor(\.date, order: .reverse),
+                ])
         }
     }
 }
@@ -453,13 +541,16 @@ struct FilteredCategoryInsightsView: View {
 struct FilteredDateInsightsView: View {
     @FetchRequest private var transactions: FetchedResults<Transaction>
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
 
-    @AppStorage("swapTimeLabel", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var swapTimeLabel: Bool = false
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("swapTimeLabel", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var swapTimeLabel: Bool = false
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
     var body: some View {
         VStack(spacing: 0) {
@@ -467,38 +558,46 @@ struct FilteredDateInsightsView: View {
                 NoResultsView(fullscreen: false)
             }
             ForEach(transactions) { transaction in
-                SingleTransactionView(transaction: transaction, showCents: showCents, currencySymbol: currencySymbol, currency: currency, swapTimeLabel: swapTimeLabel, future: false)
+                SingleTransactionView(
+                    transaction: transaction, showCents: showCents, currencySymbol: currencySymbol,
+                    currency: currency, swapTimeLabel: swapTimeLabel, future: false)
             }
         }
         .frame(maxHeight: .infinity)
     }
 
     init(date: Date, income: Bool) {
-        let startPredicate = NSPredicate(format: "%K >= %@", #keyPath(Transaction.date), date as CVarArg)
+        let startPredicate = NSPredicate(
+            format: "%K >= %@", #keyPath(Transaction.date), date as CVarArg)
 
         let endPredicate: NSPredicate
 
         let calendar = Calendar.current
 
         if calendar.isDate(date, equalTo: Date.now, toGranularity: .day) {
-            endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+            endPredicate = NSPredicate(
+                format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
         } else {
             let next = calendar.date(byAdding: .day, value: 1, to: date) ?? Date.now
-            endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+            endPredicate = NSPredicate(
+                format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
         }
 
         let incomePredicate = NSPredicate(format: "income = %d", income)
 
-        let andPredicate = NSCompoundPredicate(type: .and, subpredicates: [startPredicate, incomePredicate, endPredicate])
+        let andPredicate = NSCompoundPredicate(
+            type: .and, subpredicates: [startPredicate, incomePredicate, endPredicate])
 
-        _transactions = FetchRequest<Transaction>(sortDescriptors: [
-            SortDescriptor(\.date, order: .reverse)
-        ], predicate: andPredicate)
+        _transactions = FetchRequest<Transaction>(
+            sortDescriptors: [
+                SortDescriptor(\.date, order: .reverse)
+            ], predicate: andPredicate)
     }
 }
 
 struct FilteredInsightsView: View {
-    @SectionedFetchRequest<Date?, Transaction> private var transactions: SectionedFetchResults<Date?, Transaction>
+    @SectionedFetchRequest<Date?, Transaction> private var transactions:
+        SectionedFetchResults<Date?, Transaction>
 
     var body: some View {
         VStack(spacing: 30) {
@@ -512,35 +611,43 @@ struct FilteredInsightsView: View {
     }
 
     init(startDate: Date, income: Bool? = nil, type: Int) {
-        let startPredicate = NSPredicate(format: "%K >= %@", #keyPath(Transaction.date), startDate as CVarArg)
+        let startPredicate = NSPredicate(
+            format: "%K >= %@", #keyPath(Transaction.date), startDate as CVarArg)
 
         let endPredicate: NSPredicate
 
         var calendar = Calendar(identifier: .gregorian)
 
-        calendar.firstWeekday = UserDefaults(suiteName: "group.com.rafaelsoh.dime")!.integer(forKey: "firstWeekday")
+        calendar.firstWeekday = UserDefaults(suiteName: "group.wtf.savva.dime")!.integer(
+            forKey: "firstWeekday")
         calendar.minimumDaysInFirstWeek = 4
 
         if type == 1 {
             if calendar.isDate(startDate, equalTo: Date.now, toGranularity: .weekOfYear) {
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
             } else {
                 let next = calendar.date(byAdding: .day, value: 7, to: startDate) ?? Date.now
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
             }
         } else if type == 2 {
             if calendar.isDate(startDate, equalTo: Date.now, toGranularity: .month) {
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
             } else {
                 let next = calendar.date(byAdding: .month, value: 1, to: startDate) ?? Date.now
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
             }
         } else {
             if calendar.isDate(startDate, equalTo: Date.now, toGranularity: .year) {
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), Date.now as CVarArg)
             } else {
                 let next = calendar.date(byAdding: .year, value: 1, to: startDate) ?? Date.now
-                endPredicate = NSPredicate(format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
+                endPredicate = NSPredicate(
+                    format: "%K < %@", #keyPath(Transaction.date), next as CVarArg)
             }
         }
 
@@ -548,16 +655,20 @@ struct FilteredInsightsView: View {
 
         if let unwrappedIncome = income {
             let incomePredicate = NSPredicate(format: "income = %d", unwrappedIncome)
-            andPredicate = NSCompoundPredicate(type: .and, subpredicates: [startPredicate, endPredicate, incomePredicate])
+            andPredicate = NSCompoundPredicate(
+                type: .and, subpredicates: [startPredicate, endPredicate, incomePredicate])
 
         } else {
-            andPredicate = NSCompoundPredicate(type: .and, subpredicates: [startPredicate, endPredicate])
+            andPredicate = NSCompoundPredicate(
+                type: .and, subpredicates: [startPredicate, endPredicate])
         }
 
-        _transactions = SectionedFetchRequest<Date?, Transaction>(sectionIdentifier: \.day, sortDescriptors: [
-            SortDescriptor(\.day, order: .reverse),
-            SortDescriptor(\.date, order: .reverse)
-        ], predicate: andPredicate)
+        _transactions = SectionedFetchRequest<Date?, Transaction>(
+            sectionIdentifier: \.day,
+            sortDescriptors: [
+                SortDescriptor(\.day, order: .reverse),
+                SortDescriptor(\.date, order: .reverse),
+            ], predicate: andPredicate)
     }
 }
 
@@ -569,7 +680,8 @@ struct SingleGraphView: View {
     @Binding var categoryFilterMode: Bool
     @Binding var selectedDate: Date?
 
-    @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var incomeTracking: Bool = true
+    @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var incomeTracking: Bool = true
     let language = Locale.current.languageCode
 
     var selectedDateString: String {
@@ -595,10 +707,12 @@ struct SingleGraphView: View {
     @State var selectedDateAmount: Double = 0
 
     var currencySymbol: String
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var showCents: Bool
 
-    @AppStorage("firstDayOfMonth", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var firstDayOfMonth: Int = 1
+    @AppStorage("firstDayOfMonth", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var firstDayOfMonth: Int = 1
 
     var dateString: String {
         let dateFormatter = DateFormatter()
@@ -616,9 +730,11 @@ struct SingleGraphView: View {
                 let anotherDateFormatter = DateFormatter()
                 anotherDateFormatter.dateFormat = "d"
 
-                return anotherDateFormatter.string(from: date) + " - " + dateFormatter.string(from: endWeekDate)
+                return anotherDateFormatter.string(from: date) + " - "
+                    + dateFormatter.string(from: endWeekDate)
             } else {
-                return dateFormatter.string(from: date) + " - " + dateFormatter.string(from: endWeekDate)
+                return dateFormatter.string(from: date) + " - "
+                    + dateFormatter.string(from: endWeekDate)
             }
         } else if type == 2 {
             if firstDayOfMonth == 1 {
@@ -626,11 +742,14 @@ struct SingleGraphView: View {
             } else {
                 dateFormatter.dateFormat = "d MMM"
                 let endComponents = DateComponents(month: 1, second: -1)
-                let endMonthDate = Calendar.current.date(byAdding: endComponents, to: date) ?? Date.now
+                let endMonthDate =
+                    Calendar.current.date(byAdding: endComponents, to: date) ?? Date.now
                 if language == "ru" {
-                    return dateFormatter.string(from: date) + " - " + dateFormatter.string(from: endMonthDate)
+                    return dateFormatter.string(from: date) + " - "
+                        + dateFormatter.string(from: endMonthDate)
                 } else {
-                    return dateFormatter.string(from: date)  + " - " + dateFormatter.string(from: endMonthDate)
+                    return dateFormatter.string(from: date) + " - "
+                        + dateFormatter.string(from: endMonthDate)
                 }
             }
         } else if type == 3 {
@@ -716,9 +835,13 @@ struct SingleGraphView: View {
             supplementalText = stringConverter(amount: average)
         }
 
-        let totalWidth = amountText.widthOfRoundedString(size: UIFont.textStyleSize(.title1), weight: .medium)
-        let averageWidth = supplementalText.widthOfRoundedString(size: UIFont.textStyleSize(.title1), weight: .medium)
-        let percentageWidth = percentageDifference.widthOfRoundedString(size: UIFont.textStyleSize(.footnote), weight: .medium) + 10
+        let totalWidth = amountText.widthOfRoundedString(
+            size: UIFont.textStyleSize(.title1), weight: .medium)
+        let averageWidth = supplementalText.widthOfRoundedString(
+            size: UIFont.textStyleSize(.title1), weight: .medium)
+        let percentageWidth =
+            percentageDifference.widthOfRoundedString(
+                size: UIFont.textStyleSize(.footnote), weight: .medium) + 10
 
         let screenWidth = UIScreen.main.bounds.width - 60
 
@@ -736,16 +859,26 @@ struct SingleGraphView: View {
                         .layoutPriority(1)
 
                     HStack(spacing: 10) {
-                        InsightsDollarView(amount: totalNet, currencySymbol: currencySymbol, showCents: showCents, net: netPositive)
-                            .layoutPriority(1)
+                        InsightsDollarView(
+                            amount: totalNet, currencySymbol: currencySymbol, showCents: showCents,
+                            net: netPositive
+                        )
+                        .layoutPriority(1)
 
                         if showPercentage {
                             Text(percentageDifference)
                                 .font(.system(.footnote, design: .rounded).weight(.medium))
-                                .foregroundColor(currentNet < lastNet ? Color.AlertRed : Color.IncomeGreen)
+                                .foregroundColor(
+                                    currentNet < lastNet ? Color.AlertRed : Color.IncomeGreen
+                                )
                                 .padding(3)
                                 .padding(.horizontal, 3)
-                                .background(currentNet < lastNet ? Color.AlertRed.opacity(0.23) : Color.IncomeGreen.opacity(0.23), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                .background(
+                                    currentNet < lastNet
+                                        ? Color.AlertRed.opacity(0.23)
+                                        : Color.IncomeGreen.opacity(0.23),
+                                    in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                )
                                 .opacity(currentNet == 0 || lastNet == 0 ? 0 : 1)
                                 .lineLimit(1)
                         }
@@ -758,11 +891,14 @@ struct SingleGraphView: View {
                         Text(selectedCategoryName)
                             .lineLimit(1)
                             .font(.system(.callout, design: .rounded).weight(.semibold))
-//                            .font(.system(size: 14, weight: .semibold, design: .rounded))
+                            //                            .font(.system(size: 14, weight: .semibold, design: .rounded))
                             .foregroundColor(Color.SubtitleText)
 
-                        InsightsDollarView(amount: selectedCategoryAmount, currencySymbol: currencySymbol, showCents: showCents)
-                            .layoutPriority(1)
+                        InsightsDollarView(
+                            amount: selectedCategoryAmount, currencySymbol: currencySymbol,
+                            showCents: showCents
+                        )
+                        .layoutPriority(1)
                     }
                 } else if selectedDate != nil {
                     VStack(alignment: .trailing, spacing: 1.3) {
@@ -770,17 +906,27 @@ struct SingleGraphView: View {
                             .lineLimit(1)
                             .font(.system(.callout, design: .rounded).weight(.semibold))
                             .foregroundColor(Color.SubtitleText)
-                        InsightsDollarView(amount: selectedDateAmount, currencySymbol: currencySymbol, showCents: showCents)
-                            .layoutPriority(1)
+                        InsightsDollarView(
+                            amount: selectedDateAmount, currencySymbol: currencySymbol,
+                            showCents: showCents
+                        )
+                        .layoutPriority(1)
                     }
                 } else if incomeFiltering {
                     VStack(alignment: .trailing, spacing: 1.3) {
-                        Text(type == 3 ? (income ? "Income/Mth" : "Spent/Mth") : (income ? "Income/Day" : "Spent/Day"))
-                            .lineLimit(1)
-                            .font(.system(.callout, design: .rounded).weight(.semibold))
-                            .foregroundColor(Color.SubtitleText)
-                        InsightsDollarView(amount: incomeAverage, currencySymbol: currencySymbol, showCents: showCents)
-                            .layoutPriority(1)
+                        Text(
+                            type == 3
+                                ? (income ? "Income/Mth" : "Spent/Mth")
+                                : (income ? "Income/Day" : "Spent/Day")
+                        )
+                        .lineLimit(1)
+                        .font(.system(.callout, design: .rounded).weight(.semibold))
+                        .foregroundColor(Color.SubtitleText)
+                        InsightsDollarView(
+                            amount: incomeAverage, currencySymbol: currencySymbol,
+                            showCents: showCents
+                        )
+                        .layoutPriority(1)
                     }
                 } else {
                     VStack(alignment: .trailing, spacing: 1.3) {
@@ -788,8 +934,11 @@ struct SingleGraphView: View {
                             .lineLimit(1)
                             .font(.system(.callout, design: .rounded).weight(.semibold))
                             .foregroundColor(Color.SubtitleText)
-                        InsightsDollarView(amount: average, currencySymbol: currencySymbol, showCents: showCents, net: netPositive)
-                            .layoutPriority(1)
+                        InsightsDollarView(
+                            amount: average, currencySymbol: currencySymbol, showCents: showCents,
+                            net: netPositive
+                        )
+                        .layoutPriority(1)
                     }
                 }
             }
@@ -802,7 +951,10 @@ struct SingleGraphView: View {
 
             if incomeTracking {
                 HStack(spacing: 11) {
-                    InsightsSummaryBlockView(income: true, amountString: stringGenerator(amount: totalIncome), showOverlay: income && incomeFiltering) {
+                    InsightsSummaryBlockView(
+                        income: true, amountString: stringGenerator(amount: totalIncome),
+                        showOverlay: income && incomeFiltering
+                    ) {
                         withAnimation {
                             if incomeFiltering && income {
                                 incomeFiltering = false
@@ -813,7 +965,10 @@ struct SingleGraphView: View {
                         }
                     }
 
-                    InsightsSummaryBlockView(income: false, amountString: stringGenerator(amount: totalSpent), showOverlay: !income && incomeFiltering) {
+                    InsightsSummaryBlockView(
+                        income: false, amountString: stringGenerator(amount: totalSpent),
+                        showOverlay: !income && incomeFiltering
+                    ) {
                         withAnimation {
                             if incomeFiltering && !income {
                                 incomeFiltering = false
@@ -830,11 +985,17 @@ struct SingleGraphView: View {
 
             if incomeFiltering {
                 if type == 1 {
-                    SingleWeekBarGraphView(week: date, date: $selectedDate, mode: $categoryFilterMode, amount: $selectedDateAmount, dataController: dataController, income: income)
+                    SingleWeekBarGraphView(
+                        week: date, date: $selectedDate, mode: $categoryFilterMode,
+                        amount: $selectedDateAmount, dataController: dataController, income: income)
                 } else if type == 2 {
-                    SingleMonthBarGraphView(month: date, date: $selectedDate, mode: $categoryFilterMode, amount: $selectedDateAmount, dataController: dataController, income: income)
+                    SingleMonthBarGraphView(
+                        month: date, date: $selectedDate, mode: $categoryFilterMode,
+                        amount: $selectedDateAmount, dataController: dataController, income: income)
                 } else if type == 3 {
-                    SingleYearBarGraphView(year: date, date: $selectedDate, mode: $categoryFilterMode, amount: $selectedDateAmount, dataController: dataController, income: income)
+                    SingleYearBarGraphView(
+                        year: date, date: $selectedDate, mode: $categoryFilterMode,
+                        amount: $selectedDateAmount, dataController: dataController, income: income)
                 }
             }
         }
@@ -862,7 +1023,12 @@ struct SingleGraphView: View {
         }
     }
 
-    init(showingDate: Date, date: Binding<Date?>?, mode: Binding<Bool>, categoryName: String, categoryAmount: Double, currencySymbol: String, showCents: Bool, dataController: DataController, income: Binding<Bool>, incomeFiltering: Binding<Bool>, type: Int) {
+    init(
+        showingDate: Date, date: Binding<Date?>?, mode: Binding<Bool>, categoryName: String,
+        categoryAmount: Double, currencySymbol: String, showCents: Bool,
+        dataController: DataController, income: Binding<Bool>, incomeFiltering: Binding<Bool>,
+        type: Int
+    ) {
         _selectedDate = date ?? Binding.constant(nil)
         _categoryFilterMode = mode
         _income = income
@@ -893,9 +1059,11 @@ struct SingleGraphView: View {
         if type == 1 {
             lastDate = Calendar.current.date(byAdding: .day, value: -7, to: showingDate) ?? Date.now
         } else if type == 2 {
-            lastDate = Calendar.current.date(byAdding: .month, value: -1, to: showingDate) ?? Date.now
+            lastDate =
+                Calendar.current.date(byAdding: .month, value: -1, to: showingDate) ?? Date.now
         } else {
-            lastDate = Calendar.current.date(byAdding: .year, value: -1, to: showingDate) ?? Date.now
+            lastDate =
+                Calendar.current.date(byAdding: .year, value: -1, to: showingDate) ?? Date.now
         }
 
         let lastDateData = dataController.getInsightsSummary(type: type, date: lastDate)
@@ -918,12 +1086,14 @@ struct WeekGraphView: View {
         SortDescriptor(\.day)
     ]) private var transactions: FetchedResults<Transaction>
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
 
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
     @State var categoryFilterMode = false
     @State var categoryFilter: Category?
@@ -932,10 +1102,12 @@ struct WeekGraphView: View {
 
     var startOfCurrentWeek: Date {
         var calendar = Calendar(identifier: .gregorian)
-        calendar.firstWeekday = UserDefaults(suiteName: "group.com.rafaelsoh.dime")?.integer(forKey: "firstWeekday") ?? 0
+        calendar.firstWeekday =
+            UserDefaults(suiteName: "group.wtf.savva.dime")?.integer(forKey: "firstWeekday") ?? 0
         calendar.minimumDaysInFirstWeek = 4
 
-        let dateComponents = calendar.dateComponents([.weekOfYear, .yearForWeekOfYear], from: Date.now)
+        let dateComponents = calendar.dateComponents(
+            [.weekOfYear, .yearForWeekOfYear], from: Date.now)
 
         return calendar.date(from: dateComponents) ?? Date.now
     }
@@ -946,11 +1118,14 @@ struct WeekGraphView: View {
             return Date.now
         } else {
             var calendar = Calendar(identifier: .gregorian)
-            calendar.firstWeekday = UserDefaults(suiteName: "group.com.rafaelsoh.dime")?.integer(forKey: "firstWeekday") ?? 0
+            calendar.firstWeekday =
+                UserDefaults(suiteName: "group.wtf.savva.dime")?.integer(forKey: "firstWeekday")
+                ?? 0
             calendar.minimumDaysInFirstWeek = 4
 
             if let date = transactions[0].day {
-                let dateComponents = calendar.dateComponents([.weekOfYear, .yearForWeekOfYear], from: date)
+                let dateComponents = calendar.dateComponents(
+                    [.weekOfYear, .yearForWeekOfYear], from: date)
 
                 return calendar.date(from: dateComponents) ?? Date.now
             } else {
@@ -968,7 +1143,9 @@ struct WeekGraphView: View {
         let startOfLastWeek = calendar.date(byAdding: .day, value: -7, to: showingWeek) ?? Date.now
         let startOfNextWeek = calendar.date(byAdding: .day, value: 7, to: showingWeek) ?? Date.now
 
-        return (dateFormatter.string(from: startOfLastWeek), dateFormatter.string(from: startOfNextWeek))
+        return (
+            dateFormatter.string(from: startOfLastWeek), dateFormatter.string(from: startOfNextWeek)
+        )
     }
 
     @State private var offset: CGFloat = 0
@@ -982,8 +1159,8 @@ struct WeekGraphView: View {
         } else {
             return false
         }
-//
-//        return abs(offset) > UIScreen.main.bounds.width * 0.3
+        //
+        //        return abs(offset) > UIScreen.main.bounds.width * 0.3
     }
 
     @State var showingWeek = Date.now
@@ -993,10 +1170,13 @@ struct WeekGraphView: View {
     @State var chosenCategoryName = ""
     @State var chosenCategoryAmount = 0.0
 
-    @AppStorage("insightsViewIncomeFiltering", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var income: Bool = true
-    @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var incomeTracking: Bool = true
+    @AppStorage(
+        "insightsViewIncomeFiltering", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var income: Bool = true
+    @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var incomeTracking: Bool = true
 
-//    @Environment(\.dynamicTypeMultiplier) var multiplier
+    //    @Environment(\.dynamicTypeMultiplier) var multiplier
 
     @State var incomeFiltering: Bool = true
 
@@ -1004,24 +1184,33 @@ struct WeekGraphView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 18) {
                 ZStack {
-                    SingleGraphView(showingDate: showingWeek, date: $selectedDate, mode: $categoryFilterMode, categoryName: chosenCategoryName, categoryAmount: chosenCategoryAmount, currencySymbol: currencySymbol, showCents: showCents, dataController: dataController, income: $income, incomeFiltering: $incomeFiltering, type: 1)
-                        .drawingGroup()
-                        .id(refreshID)
-                        .onAppear {
-                            showingWeek = startOfCurrentWeek
-                        }
-                        .offset(x: offset)
+                    SingleGraphView(
+                        showingDate: showingWeek, date: $selectedDate, mode: $categoryFilterMode,
+                        categoryName: chosenCategoryName, categoryAmount: chosenCategoryAmount,
+                        currencySymbol: currencySymbol, showCents: showCents,
+                        dataController: dataController, income: $income,
+                        incomeFiltering: $incomeFiltering, type: 1
+                    )
+                    .drawingGroup()
+                    .id(refreshID)
+                    .onAppear {
+                        showingWeek = startOfCurrentWeek
+                    }
+                    .offset(x: offset)
 
                     if !changeDate {
                         HStack {
                             if showingWeek != startOfLastWeek {
-                                SwipeArrowView(left: true, swipeString: swipeStrings.backward.uppercased(), changeTime: changeTime)
+                                SwipeArrowView(
+                                    left: true, swipeString: swipeStrings.backward.uppercased(),
+                                    changeTime: changeTime
+                                )
                                 .offset(x: -100)
                                 .offset(x: min(100, offset))
                             } else {
                                 SwipeEndView(left: true)
-                                .offset(x: -120)
-                                .offset(x: min(120, offset))
+                                    .offset(x: -120)
+                                    .offset(x: min(120, offset))
                             }
 
                             Spacer()
@@ -1031,13 +1220,16 @@ struct WeekGraphView: View {
                             Spacer()
 
                             if showingWeek != startOfCurrentWeek {
-                                SwipeArrowView(left: false, swipeString: swipeStrings.forward.uppercased(), changeTime: changeTime)
+                                SwipeArrowView(
+                                    left: false, swipeString: swipeStrings.forward.uppercased(),
+                                    changeTime: changeTime
+                                )
                                 .offset(x: 100)
                                 .offset(x: max(-100, offset))
                             } else {
                                 SwipeEndView(left: false)
-                                .offset(x: 120)
-                                .offset(x: max(-120, offset))
+                                    .offset(x: 120)
+                                    .offset(x: max(-120, offset))
                             }
                         }
                     }
@@ -1046,18 +1238,27 @@ struct WeekGraphView: View {
                 .padding(.horizontal, 30)
                 .simultaneousGesture(
                     DragGesture()
-                        .updating($isDragging, body: { _, state, _ in
-                            state = true
-                        })
+                        .updating(
+                            $isDragging,
+                            body: { _, state, _ in
+                                state = true
+                            }
+                        )
                         .onChanged { value in
                             withAnimation {
                                 if value.translation.width < 0, showingWeek != startOfCurrentWeek {
                                     offset = value.translation.width * 0.9
-                                } else if value.translation.width < 0, showingWeek == startOfCurrentWeek {
+                                } else if value.translation.width < 0,
+                                    showingWeek == startOfCurrentWeek
+                                {
                                     offset = value.translation.width * 0.5
-                                } else if value.translation.width > 0, showingWeek != startOfLastWeek {
+                                } else if value.translation.width > 0,
+                                    showingWeek != startOfLastWeek
+                                {
                                     offset = value.translation.width * 0.9
-                                } else if value.translation.width > 0, showingWeek == startOfLastWeek {
+                                } else if value.translation.width > 0,
+                                    showingWeek == startOfLastWeek
+                                {
                                     offset = value.translation.width * 0.5
                                 }
                             }
@@ -1068,7 +1269,9 @@ struct WeekGraphView: View {
 
                                     offset = UIScreen.main.bounds.width
 
-                                    showingWeek = Calendar.current.date(byAdding: .day, value: 7, to: showingWeek) ?? Date.now
+                                    showingWeek =
+                                        Calendar.current.date(
+                                            byAdding: .day, value: 7, to: showingWeek) ?? Date.now
 
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         offset = 0
@@ -1078,7 +1281,9 @@ struct WeekGraphView: View {
 
                                     offset = -UIScreen.main.bounds.width
 
-                                    showingWeek = Calendar.current.date(byAdding: .day, value: -7, to: showingWeek) ?? Date.now
+                                    showingWeek =
+                                        Calendar.current.date(
+                                            byAdding: .day, value: -7, to: showingWeek) ?? Date.now
 
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         offset = 0
@@ -1128,15 +1333,22 @@ struct WeekGraphView: View {
                             .padding(.horizontal, 20)
                     } else {
                         if selectedDate == nil {
-                            HorizontalPieChartView(date: showingWeek, categoryFilter: $categoryFilter, categoryFilterMode: $categoryFilterMode, selectedDate: $selectedDate, chosenAmount: $chosenCategoryAmount, chosenName: $chosenCategoryName, type: .week, income: income)
-                                .padding(.horizontal, 30)
-                                .padding(.bottom, 70)
-                                .id(refreshID1)
+                            HorizontalPieChartView(
+                                date: showingWeek, categoryFilter: $categoryFilter,
+                                categoryFilterMode: $categoryFilterMode,
+                                selectedDate: $selectedDate, chosenAmount: $chosenCategoryAmount,
+                                chosenName: $chosenCategoryName, type: .week, income: income
+                            )
+                            .padding(.horizontal, 30)
+                            .padding(.bottom, 70)
+                            .id(refreshID1)
 
                             if categoryFilterMode {
-                                FilteredCategoryInsightsView(category: categoryFilter, date: showingWeek, type: .week)
-                                    .padding(.bottom, 70)
-                                    .padding(.horizontal, 20)
+                                FilteredCategoryInsightsView(
+                                    category: categoryFilter, date: showingWeek, type: .week
+                                )
+                                .padding(.bottom, 70)
+                                .padding(.horizontal, 20)
                             }
                         } else {
                             FilteredDateInsightsView(date: selectedDate ?? Date.now, income: income)
@@ -1162,59 +1374,61 @@ struct AverageLineView: View {
     var getMax: Int
     var average: Double
 
-//    @AppStorage("animated", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var animated: Bool = true
-//    @State var showLine: Bool = false
-//    @State var offset: CGFloat
+    //    @AppStorage("animated", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var animated: Bool = true
+    //    @State var showLine: Bool = false
+    //    @State var offset: CGFloat
 
-//    var calculatedOffset: CGFloat {
-//        return getOffset(maxi: getMax, average: average)
-//    }
+    //    var calculatedOffset: CGFloat {
+    //        return getOffset(maxi: getMax, average: average)
+    //    }
 
     var body: some View {
         HStack(spacing: 2) {
             PencilView(text: getAverageText(average: average))
 
             Line()
-                .stroke(Color.SubtitleText, style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5]))
+                .stroke(
+                    Color.SubtitleText, style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5])
+                )
                 .frame(height: 1)
                 .frame(maxWidth: .infinity)
         }
-//        .opacity(showLine ? 1 : 0)
+        //        .opacity(showLine ? 1 : 0)
         .offset(y: getOffset(maxi: getMax, average: average))
         .opacity((average / Double(getMax)) < 0.1 || (average / Double(getMax)) > 0.9 ? 0 : 1)
-//        .onAppear {
-//            DispatchQueue.main.sync {
-//                withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.8)) {
-//                    print(calculatedOffset)
-//                    offset = calculatedOffset
-//                }
-//            }
-//        }
-//        .onChange(of: showLine) { newValue in
-//            if newValue {
-//                DispatchQueue.main.asyncAfter(deadline: .now()) {
-//                    if !animated {
-//                        offset = calculatedOffset
-//                    } else {
-//                        
-//                    }
-//                }
-//            }
-//        }
-//        .onChange(of: calculatedOffset) { newValue in
-//            print(calculatedOffset)
-//            if newValue != 0 {
-//                if showLine {
-//                    if !animated {
-//                        offset = calculatedOffset
-//                    } else {
-//                        withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.8)) {
-//                            offset = calculatedOffset
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        //        .onAppear {
+        //            DispatchQueue.main.sync {
+        //                withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.8)) {
+        //                    print(calculatedOffset)
+        //                    offset = calculatedOffset
+        //                }
+        //            }
+        //        }
+        //        .onChange(of: showLine) { newValue in
+        //            if newValue {
+        //                DispatchQueue.main.asyncAfter(deadline: .now()) {
+        //                    if !animated {
+        //                        offset = calculatedOffset
+        //                    } else {
+        //
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        .onChange(of: calculatedOffset) { newValue in
+        //            print(calculatedOffset)
+        //            if newValue != 0 {
+        //                if showLine {
+        //                    if !animated {
+        //                        offset = calculatedOffset
+        //                    } else {
+        //                        withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.8)) {
+        //                            offset = calculatedOffset
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
 
     }
 }
@@ -1269,8 +1483,12 @@ struct SingleWeekBarGraphView: View {
                                     .frame(height: barHeight)
 
                                 AnimatedBarGraph(index: daysOfWeek.firstIndex(of: day) ?? 0)
-                                    .frame(height: getBarHeight(point: dayDictionary[day] ?? 0, maxi: getMax))
-                                    .opacity(selectedDate == nil ? 1 : (selectedDate == day ? 1 : 0.4))
+                                    .frame(
+                                        height: getBarHeight(
+                                            point: dayDictionary[day] ?? 0, maxi: getMax)
+                                    )
+                                    .opacity(
+                                        selectedDate == nil ? 1 : (selectedDate == day ? 1 : 0.4))
                             }
 
                             Text(getWeekday(day: day).prefix(1))
@@ -1317,7 +1535,10 @@ struct SingleWeekBarGraphView: View {
         return dateFormatter.string(from: day)
     }
 
-    init(week: Date, date: Binding<Date?>?, mode: Binding<Bool>, amount: Binding<Double>, dataController: DataController, income: Bool) {
+    init(
+        week: Date, date: Binding<Date?>?, mode: Binding<Bool>, amount: Binding<Double>,
+        dataController: DataController, income: Bool
+    ) {
         _selectedDate = date ?? Binding.constant(nil)
         _categoryFilterMode = mode
         _selectedDateAmount = amount
@@ -1342,14 +1563,17 @@ struct MonthGraphView: View {
         SortDescriptor(\.day)
     ]) private var transactions: FetchedResults<Transaction>
 
-    @AppStorage("firstDayOfMonth", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var firstDayOfMonth: Int = 1
+    @AppStorage("firstDayOfMonth", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var firstDayOfMonth: Int = 1
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
 
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
     @State var categoryFilterMode = false
     @State var categoryFilter: Category?
@@ -1358,11 +1582,11 @@ struct MonthGraphView: View {
 
     var startOfCurrentMonth: Date {
         return getStartOfMonth(startDay: firstDayOfMonth)
-//        let calendar = Calendar(identifier: .gregorian)
-//
-//        let dateComponents = calendar.dateComponents([.month, .year], from: Date.now)
-//
-//        return  calendar.date(from: dateComponents) ?? Date.now
+        //        let calendar = Calendar(identifier: .gregorian)
+        //
+        //        let dateComponents = calendar.dateComponents([.month, .year], from: Date.now)
+        //
+        //        return  calendar.date(from: dateComponents) ?? Date.now
     }
 
     // start of month of the earliest transaction
@@ -1373,10 +1597,10 @@ struct MonthGraphView: View {
             let date = transactions[0].day ?? Date.now
 
             return calculateStartOfMonthPeriod(earliestDate: date, startOfMonthDay: firstDayOfMonth)
-//
-//            let dateComponents = calendar.dateComponents([.month, .year], from: date)
-//
-//            return  calendar.date(from: dateComponents) ?? Date.now
+            //
+            //            let dateComponents = calendar.dateComponents([.month, .year], from: date)
+            //
+            //            return  calendar.date(from: dateComponents) ?? Date.now
         }
     }
 
@@ -1386,10 +1610,15 @@ struct MonthGraphView: View {
 
         let calendar = Calendar.current
 
-        let startOfLastMonth = calendar.date(byAdding: .month, value: -1, to: showingMonth) ?? Date.now
-        let startOfNextMonth = calendar.date(byAdding: .month, value: 1, to: showingMonth) ?? Date.now
+        let startOfLastMonth =
+            calendar.date(byAdding: .month, value: -1, to: showingMonth) ?? Date.now
+        let startOfNextMonth =
+            calendar.date(byAdding: .month, value: 1, to: showingMonth) ?? Date.now
 
-        return (dateFormatter.string(from: startOfLastMonth), dateFormatter.string(from: startOfNextMonth))
+        return (
+            dateFormatter.string(from: startOfLastMonth),
+            dateFormatter.string(from: startOfNextMonth)
+        )
     }
 
     @State private var offset: CGFloat = 0
@@ -1403,8 +1632,8 @@ struct MonthGraphView: View {
         } else {
             return false
         }
-//
-//        return abs(offset) > UIScreen.main.bounds.width * 0.3
+        //
+        //        return abs(offset) > UIScreen.main.bounds.width * 0.3
     }
 
     @State var showingMonth = Date.now
@@ -1414,10 +1643,13 @@ struct MonthGraphView: View {
     @State var chosenCategoryName = ""
     @State var chosenCategoryAmount = 0.0
 
-    @AppStorage("insightsViewIncomeFiltering", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var income: Bool = true
-    @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var incomeTracking: Bool = true
+    @AppStorage(
+        "insightsViewIncomeFiltering", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var income: Bool = true
+    @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var incomeTracking: Bool = true
 
-//    @Environment(\.dynamicTypeMultiplier) var multiplier
+    //    @Environment(\.dynamicTypeMultiplier) var multiplier
 
     @State var incomeFiltering: Bool = true
 
@@ -1425,24 +1657,33 @@ struct MonthGraphView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 18) {
                 ZStack {
-                    SingleGraphView(showingDate: showingMonth, date: $selectedDate, mode: $categoryFilterMode, categoryName: chosenCategoryName, categoryAmount: chosenCategoryAmount, currencySymbol: currencySymbol, showCents: showCents, dataController: dataController, income: $income, incomeFiltering: $incomeFiltering, type: 2)
-                        .drawingGroup()
-                        .id(refreshID)
-                        .onAppear {
-                            showingMonth = startOfCurrentMonth
-                        }
-                        .offset(x: offset)
+                    SingleGraphView(
+                        showingDate: showingMonth, date: $selectedDate, mode: $categoryFilterMode,
+                        categoryName: chosenCategoryName, categoryAmount: chosenCategoryAmount,
+                        currencySymbol: currencySymbol, showCents: showCents,
+                        dataController: dataController, income: $income,
+                        incomeFiltering: $incomeFiltering, type: 2
+                    )
+                    .drawingGroup()
+                    .id(refreshID)
+                    .onAppear {
+                        showingMonth = startOfCurrentMonth
+                    }
+                    .offset(x: offset)
 
                     if !changeDate {
                         HStack {
                             if showingMonth != startOfLastMonth {
-                                SwipeArrowView(left: true, swipeString: swipeStrings.backward.uppercased(), changeTime: changeTime)
+                                SwipeArrowView(
+                                    left: true, swipeString: swipeStrings.backward.uppercased(),
+                                    changeTime: changeTime
+                                )
                                 .offset(x: -100)
                                 .offset(x: min(100, offset))
                             } else {
                                 SwipeEndView(left: true)
-                                .offset(x: -120)
-                                .offset(x: min(120, offset))
+                                    .offset(x: -120)
+                                    .offset(x: min(120, offset))
                             }
 
                             Spacer()
@@ -1452,13 +1693,16 @@ struct MonthGraphView: View {
                             Spacer()
 
                             if showingMonth != startOfCurrentMonth {
-                                SwipeArrowView(left: false, swipeString: swipeStrings.forward.uppercased(), changeTime: changeTime)
+                                SwipeArrowView(
+                                    left: false, swipeString: swipeStrings.forward.uppercased(),
+                                    changeTime: changeTime
+                                )
                                 .offset(x: 100)
                                 .offset(x: max(-100, offset))
                             } else {
                                 SwipeEndView(left: false)
-                                .offset(x: 120)
-                                .offset(x: max(-120, offset))
+                                    .offset(x: 120)
+                                    .offset(x: max(-120, offset))
                             }
                         }
                     }
@@ -1467,18 +1711,28 @@ struct MonthGraphView: View {
                 .padding(.horizontal, 30)
                 .simultaneousGesture(
                     DragGesture()
-                        .updating($isDragging, body: { _, state, _ in
-                            state = true
-                        })
+                        .updating(
+                            $isDragging,
+                            body: { _, state, _ in
+                                state = true
+                            }
+                        )
                         .onChanged { value in
                             withAnimation {
-                                if value.translation.width < 0, showingMonth != startOfCurrentMonth {
+                                if value.translation.width < 0, showingMonth != startOfCurrentMonth
+                                {
                                     offset = value.translation.width * 0.9
-                                } else if value.translation.width < 0, showingMonth == startOfCurrentMonth {
+                                } else if value.translation.width < 0,
+                                    showingMonth == startOfCurrentMonth
+                                {
                                     offset = value.translation.width * 0.5
-                                } else if value.translation.width > 0, showingMonth != startOfLastMonth {
+                                } else if value.translation.width > 0,
+                                    showingMonth != startOfLastMonth
+                                {
                                     offset = value.translation.width * 0.9
-                                } else if value.translation.width > 0, showingMonth == startOfLastMonth {
+                                } else if value.translation.width > 0,
+                                    showingMonth == startOfLastMonth
+                                {
                                     offset = value.translation.width * 0.5
                                 }
                             }
@@ -1489,7 +1743,10 @@ struct MonthGraphView: View {
 
                                     offset = UIScreen.main.bounds.width
 
-                                    showingMonth = Calendar.current.date(byAdding: .month, value: 1, to: showingMonth) ?? Date.now
+                                    showingMonth =
+                                        Calendar.current.date(
+                                            byAdding: .month, value: 1, to: showingMonth)
+                                        ?? Date.now
 
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         offset = 0
@@ -1499,7 +1756,10 @@ struct MonthGraphView: View {
 
                                     offset = -UIScreen.main.bounds.width
 
-                                    showingMonth = Calendar.current.date(byAdding: .month, value: -1, to: showingMonth) ?? Date.now
+                                    showingMonth =
+                                        Calendar.current.date(
+                                            byAdding: .month, value: -1, to: showingMonth)
+                                        ?? Date.now
 
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         offset = 0
@@ -1541,7 +1801,7 @@ struct MonthGraphView: View {
                     categoryFilterMode = false
                 }
                 .padding(.bottom, incomeFiltering ? 5 : 20)
-                
+
                 Group {
                     if !incomeFiltering {
                         FilteredInsightsView(startDate: showingMonth, type: 2)
@@ -1549,15 +1809,22 @@ struct MonthGraphView: View {
                             .padding(.horizontal, 20)
                     } else {
                         if selectedDate == nil {
-                            HorizontalPieChartView(date: showingMonth, categoryFilter: $categoryFilter, categoryFilterMode: $categoryFilterMode, selectedDate: $selectedDate, chosenAmount: $chosenCategoryAmount, chosenName: $chosenCategoryName, type: .month, income: income)
-                                .padding(.horizontal, 30)
-                                .padding(.bottom, 70)
-                                .id(refreshID1)
+                            HorizontalPieChartView(
+                                date: showingMonth, categoryFilter: $categoryFilter,
+                                categoryFilterMode: $categoryFilterMode,
+                                selectedDate: $selectedDate, chosenAmount: $chosenCategoryAmount,
+                                chosenName: $chosenCategoryName, type: .month, income: income
+                            )
+                            .padding(.horizontal, 30)
+                            .padding(.bottom, 70)
+                            .id(refreshID1)
 
                             if categoryFilterMode {
-                                FilteredCategoryInsightsView(category: categoryFilter, date: showingMonth, type: .month)
-                                    .padding(.bottom, 70)
-                                    .padding(.horizontal, 20)
+                                FilteredCategoryInsightsView(
+                                    category: categoryFilter, date: showingMonth, type: .month
+                                )
+                                .padding(.bottom, 70)
+                                .padding(.horizontal, 20)
                             }
                         } else {
                             FilteredDateInsightsView(date: selectedDate ?? Date.now, income: income)
@@ -1567,29 +1834,29 @@ struct MonthGraphView: View {
                     }
                 }
 
-//                Group {
-//                    if !incomeFiltering {
-//                        FilteredInsightsView(startDate: showingMonth, type: 2)
-//                            .padding(.bottom, 70)
-//                    } else {
-//                        if selectedDate != nil {
-//                            FilteredDateInsightsView(date: selectedDate ?? Date.now, income: income)
-//                                .padding(.bottom, 70)
-//
-//                        } else if categoryFilterMode {
-//                            FilteredCategoryInsightsView(category: categoryFilter, date: showingMonth, type: .month)
-//                                .padding(.bottom, 70)
-//                        } else {
-//                            FilteredInsightsView(startDate: showingMonth, income: income, type: 2)
-//                                .padding(.bottom, 70)
-//                        }
-//                    }
-//                }
-//                .padding(.horizontal, 20)
-//                .onTapGesture {
-//                    selectedDate = nil
-//                    categoryFilterMode = false
-//                }
+                //                Group {
+                //                    if !incomeFiltering {
+                //                        FilteredInsightsView(startDate: showingMonth, type: 2)
+                //                            .padding(.bottom, 70)
+                //                    } else {
+                //                        if selectedDate != nil {
+                //                            FilteredDateInsightsView(date: selectedDate ?? Date.now, income: income)
+                //                                .padding(.bottom, 70)
+                //
+                //                        } else if categoryFilterMode {
+                //                            FilteredCategoryInsightsView(category: categoryFilter, date: showingMonth, type: .month)
+                //                                .padding(.bottom, 70)
+                //                        } else {
+                //                            FilteredInsightsView(startDate: showingMonth, income: income, type: 2)
+                //                                .padding(.bottom, 70)
+                //                        }
+                //                    }
+                //                }
+                //                .padding(.horizontal, 20)
+                //                .onTapGesture {
+                //                    selectedDate = nil
+                //                    categoryFilterMode = false
+                //                }
             }
         }
         .onReceive(self.didSave) { _ in
@@ -1600,7 +1867,8 @@ struct MonthGraphView: View {
 }
 
 struct SingleMonthBarGraphView: View {
-    @AppStorage("firstDayOfMonth", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var firstDayOfMonth: Int = 1
+    @AppStorage("firstDayOfMonth", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var firstDayOfMonth: Int = 1
 
     @Binding var selectedDate: Date?
     @Binding var categoryFilterMode: Bool
@@ -1652,13 +1920,21 @@ struct SingleMonthBarGraphView: View {
                                 .zIndex(0)
 
                             AnimatedBarGraph(index: daysOfMonth.firstIndex(of: day) ?? 0)
-                                .frame(height: getBarHeight(point: dayDictionary[day] ?? 0, maxi: getMax))
+                                .frame(
+                                    height: getBarHeight(
+                                        point: dayDictionary[day] ?? 0, maxi: getMax)
+                                )
                                 .opacity(selectedDate == nil ? 1 : (selectedDate == day ? 1 : 0.4))
                                 .zIndex(0)
                                 .overlay(alignment: .bottom) {
-                                    if numberArray.contains(((daysOfMonth.firstIndex(of: day) ?? -1) + 1)) && firstDayOfMonth == 1 {
+                                    if numberArray.contains(
+                                        ((daysOfMonth.firstIndex(of: day) ?? -1) + 1))
+                                        && firstDayOfMonth == 1
+                                    {
                                         Text("\((daysOfMonth.firstIndex(of: day) ?? -1) + 1)")
-                                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                                            .font(
+                                                .system(size: 12, weight: .bold, design: .rounded)
+                                            )
                                             .foregroundColor(Color.SubtitleText)
                                             .frame(width: 20, alignment: .center)
                                             .offset(y: 20)
@@ -1700,7 +1976,10 @@ struct SingleMonthBarGraphView: View {
         }
     }
 
-    init(month: Date, date: Binding<Date?>?, mode: Binding<Bool>, amount: Binding<Double>, dataController: DataController, income: Bool) {
+    init(
+        month: Date, date: Binding<Date?>?, mode: Binding<Bool>, amount: Binding<Double>,
+        dataController: DataController, income: Bool
+    ) {
         _selectedDate = date ?? Binding.constant(nil)
         _categoryFilterMode = mode
         _selectedDateAmount = amount
@@ -1725,12 +2004,14 @@ struct YearGraphView: View {
         SortDescriptor(\.day)
     ]) private var transactions: FetchedResults<Transaction>
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
 
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
     @State var categoryFilterMode = false
     @State var categoryFilter: Category?
@@ -1768,7 +2049,9 @@ struct YearGraphView: View {
         let startOfLastYear = calendar.date(byAdding: .year, value: -1, to: showingYear) ?? Date.now
         let startOfNextYear = calendar.date(byAdding: .year, value: 1, to: showingYear) ?? Date.now
 
-        return (dateFormatter.string(from: startOfLastYear), dateFormatter.string(from: startOfNextYear))
+        return (
+            dateFormatter.string(from: startOfLastYear), dateFormatter.string(from: startOfNextYear)
+        )
     }
 
     @State private var offset: CGFloat = 0
@@ -1782,8 +2065,8 @@ struct YearGraphView: View {
         } else {
             return false
         }
-//
-//        return abs(offset) > UIScreen.main.bounds.width * 0.3
+        //
+        //        return abs(offset) > UIScreen.main.bounds.width * 0.3
     }
 
     @State var showingYear = Date.now
@@ -1793,10 +2076,13 @@ struct YearGraphView: View {
     @State var chosenCategoryName = ""
     @State var chosenCategoryAmount = 0.0
 
-    @AppStorage("insightsViewIncomeFiltering", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var income: Bool = true
-    @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var incomeTracking: Bool = true
-//
-//    @Environment(\.dynamicTypeMultiplier) var multiplier
+    @AppStorage(
+        "insightsViewIncomeFiltering", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var income: Bool = true
+    @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var incomeTracking: Bool = true
+    //
+    //    @Environment(\.dynamicTypeMultiplier) var multiplier
 
     @State var incomeFiltering: Bool = true
 
@@ -1804,24 +2090,33 @@ struct YearGraphView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 18) {
                 ZStack {
-                    SingleGraphView(showingDate: showingYear, date: $selectedDate, mode: $categoryFilterMode, categoryName: chosenCategoryName, categoryAmount: chosenCategoryAmount, currencySymbol: currencySymbol, showCents: showCents, dataController: dataController, income: $income, incomeFiltering: $incomeFiltering, type: 3)
-                        .drawingGroup()
-                        .id(refreshID)
-                        .onAppear {
-                            showingYear = startOfCurrentYear
-                        }
-                        .offset(x: offset)
+                    SingleGraphView(
+                        showingDate: showingYear, date: $selectedDate, mode: $categoryFilterMode,
+                        categoryName: chosenCategoryName, categoryAmount: chosenCategoryAmount,
+                        currencySymbol: currencySymbol, showCents: showCents,
+                        dataController: dataController, income: $income,
+                        incomeFiltering: $incomeFiltering, type: 3
+                    )
+                    .drawingGroup()
+                    .id(refreshID)
+                    .onAppear {
+                        showingYear = startOfCurrentYear
+                    }
+                    .offset(x: offset)
 
                     if !changeDate {
                         HStack {
                             if showingYear != startOfLastYear {
-                                SwipeArrowView(left: true, swipeString: swipeStrings.backward.uppercased(), changeTime: changeTime)
+                                SwipeArrowView(
+                                    left: true, swipeString: swipeStrings.backward.uppercased(),
+                                    changeTime: changeTime
+                                )
                                 .offset(x: -100)
                                 .offset(x: min(100, offset))
                             } else {
                                 SwipeEndView(left: true)
-                                .offset(x: -120)
-                                .offset(x: min(120, offset))
+                                    .offset(x: -120)
+                                    .offset(x: min(120, offset))
                             }
 
                             Spacer()
@@ -1831,13 +2126,16 @@ struct YearGraphView: View {
                             Spacer()
 
                             if showingYear != startOfCurrentYear {
-                                SwipeArrowView(left: false, swipeString: swipeStrings.forward.uppercased(), changeTime: changeTime)
+                                SwipeArrowView(
+                                    left: false, swipeString: swipeStrings.forward.uppercased(),
+                                    changeTime: changeTime
+                                )
                                 .offset(x: 100)
                                 .offset(x: max(-100, offset))
                             } else {
                                 SwipeEndView(left: false)
-                                .offset(x: 120)
-                                .offset(x: max(-120, offset))
+                                    .offset(x: 120)
+                                    .offset(x: max(-120, offset))
                             }
                         }
                     }
@@ -1846,18 +2144,27 @@ struct YearGraphView: View {
                 .padding(.horizontal, 30)
                 .simultaneousGesture(
                     DragGesture()
-                        .updating($isDragging, body: { _, state, _ in
-                            state = true
-                        })
+                        .updating(
+                            $isDragging,
+                            body: { _, state, _ in
+                                state = true
+                            }
+                        )
                         .onChanged { value in
                             withAnimation {
                                 if value.translation.width < 0, showingYear != startOfCurrentYear {
                                     offset = value.translation.width * 0.9
-                                } else if value.translation.width < 0, showingYear == startOfCurrentYear {
+                                } else if value.translation.width < 0,
+                                    showingYear == startOfCurrentYear
+                                {
                                     offset = value.translation.width * 0.5
-                                } else if value.translation.width > 0, showingYear != startOfLastYear {
+                                } else if value.translation.width > 0,
+                                    showingYear != startOfLastYear
+                                {
                                     offset = value.translation.width * 0.9
-                                } else if value.translation.width > 0, showingYear == startOfLastYear {
+                                } else if value.translation.width > 0,
+                                    showingYear == startOfLastYear
+                                {
                                     offset = value.translation.width * 0.5
                                 }
                             }
@@ -1868,7 +2175,9 @@ struct YearGraphView: View {
 
                                     offset = UIScreen.main.bounds.width
 
-                                    showingYear = Calendar.current.date(byAdding: .year, value: 1, to: showingYear) ?? Date.now
+                                    showingYear =
+                                        Calendar.current.date(
+                                            byAdding: .year, value: 1, to: showingYear) ?? Date.now
 
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         offset = 0
@@ -1878,7 +2187,9 @@ struct YearGraphView: View {
 
                                     offset = -UIScreen.main.bounds.width
 
-                                    showingYear = Calendar.current.date(byAdding: .year, value: -1, to: showingYear) ?? Date.now
+                                    showingYear =
+                                        Calendar.current.date(
+                                            byAdding: .year, value: -1, to: showingYear) ?? Date.now
 
                                     withAnimation(.easeInOut(duration: 0.3)) {
                                         offset = 0
@@ -1928,20 +2239,29 @@ struct YearGraphView: View {
                             .padding(.horizontal, 20)
                     } else {
                         if selectedDate == nil {
-                            HorizontalPieChartView(date: showingYear, categoryFilter: $categoryFilter, categoryFilterMode: $categoryFilterMode, selectedDate: $selectedDate, chosenAmount: $chosenCategoryAmount, chosenName: $chosenCategoryName, type: .year, income: income)
-                                .padding(.horizontal, 30)
-                                .padding(.bottom, 70)
-                                .id(refreshID1)
+                            HorizontalPieChartView(
+                                date: showingYear, categoryFilter: $categoryFilter,
+                                categoryFilterMode: $categoryFilterMode,
+                                selectedDate: $selectedDate, chosenAmount: $chosenCategoryAmount,
+                                chosenName: $chosenCategoryName, type: .year, income: income
+                            )
+                            .padding(.horizontal, 30)
+                            .padding(.bottom, 70)
+                            .id(refreshID1)
 
                             if categoryFilterMode {
-                                FilteredCategoryInsightsView(category: categoryFilter, date: showingYear, type: .year)
-                                    .padding(.bottom, 70)
-                                    .padding(.horizontal, 20)
-                            }
-                        } else {
-                            FilteredInsightsView(startDate: selectedDate ?? Date.now, income: income, type: 2)
+                                FilteredCategoryInsightsView(
+                                    category: categoryFilter, date: showingYear, type: .year
+                                )
                                 .padding(.bottom, 70)
                                 .padding(.horizontal, 20)
+                            }
+                        } else {
+                            FilteredInsightsView(
+                                startDate: selectedDate ?? Date.now, income: income, type: 2
+                            )
+                            .padding(.bottom, 70)
+                            .padding(.horizontal, 20)
                         }
                     }
                 }
@@ -2008,16 +2328,28 @@ struct SingleYearBarGraphView: View {
                                 .zIndex(0)
 
                             AnimatedBarGraph(index: monthsOfYear.firstIndex(of: month) ?? 0)
-                                .frame(height: getBarHeight(point: monthDictionary[month] ?? 0, maxi: getMax))
-                                .opacity(selectedDate == nil ? 1 : (selectedDate == month ? 1 : 0.4))
+                                .frame(
+                                    height: getBarHeight(
+                                        point: monthDictionary[month] ?? 0, maxi: getMax)
+                                )
+                                .opacity(
+                                    selectedDate == nil ? 1 : (selectedDate == month ? 1 : 0.4)
+                                )
                                 .zIndex(0)
                                 .overlay(alignment: .bottom) {
-                                    if numberArray.contains(((monthsOfYear.firstIndex(of: month) ?? 0) + 1)) {
-                                        Text(LocalizedStringKey(monthNames[((monthsOfYear.firstIndex(of: month) ?? 0) + 1)] ?? ""))
-                                            .font(.system(size: 12, weight: .bold, design: .rounded))
-                                            .foregroundColor(Color.SubtitleText)
-                                            .frame(width: 30)
-                                            .offset(y: 20)
+                                    if numberArray.contains(
+                                        ((monthsOfYear.firstIndex(of: month) ?? 0) + 1))
+                                    {
+                                        Text(
+                                            LocalizedStringKey(
+                                                monthNames[
+                                                    ((monthsOfYear.firstIndex(of: month) ?? 0) + 1)]
+                                                    ?? "")
+                                        )
+                                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                                        .foregroundColor(Color.SubtitleText)
+                                        .frame(width: 30)
+                                        .offset(y: 20)
                                     }
                                 }
                         }
@@ -2062,7 +2394,10 @@ struct SingleYearBarGraphView: View {
         return dateFormatter.string(from: month)
     }
 
-    init(year: Date, date: Binding<Date?>?, mode: Binding<Bool>, amount: Binding<Double>, dataController: DataController, income: Bool) {
+    init(
+        year: Date, date: Binding<Date?>?, mode: Binding<Bool>, amount: Binding<Double>,
+        dataController: DataController, income: Bool
+    ) {
         _selectedDate = date ?? Binding.constant(nil)
         _categoryFilterMode = mode
         _selectedDateAmount = amount
@@ -2109,9 +2444,11 @@ struct ChartTimePickerView: View {
     @State var timeframe = ChartTimeFrame.week
     @Binding var showMenu: Bool
 
-    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var colourScheme: Int = 0
+    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var colourScheme: Int = 0
 
-    @AppStorage("chartTimeFrame", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var chartType = 1
+    @AppStorage("chartTimeFrame", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var chartType = 1
 
     @Environment(\.colorScheme) var systemColorScheme
 
@@ -2137,7 +2474,11 @@ struct ChartTimePickerView: View {
                 .background {
                     if time == timeframe {
                         RoundedRectangle(cornerRadius: 6)
-                            .fill(darkMode ? Color("AlwaysDarkSecondaryBackground") : Color("AlwaysLightSecondaryBackground"))
+                            .fill(
+                                darkMode
+                                    ? Color("AlwaysDarkSecondaryBackground")
+                                    : Color("AlwaysLightSecondaryBackground")
+                            )
                             .matchedGeometryEffect(id: "TAB", in: animation)
                     }
                 }
@@ -2160,8 +2501,15 @@ struct ChartTimePickerView: View {
         .foregroundColor(darkMode ? Color("AlwaysLightBackground") : Color("AlwaysDarkBackground"))
         .padding(4)
         .frame(width: 120)
-        .background(RoundedRectangle(cornerRadius: 9).fill(darkMode ? Color("AlwaysDarkBackground") : Color("AlwaysLightBackground")).shadow(color: darkMode ? Color.clear : Color.gray.opacity(0.25), radius: 6))
-        .overlay(RoundedRectangle(cornerRadius: 9).stroke(darkMode ? Color.gray.opacity(0.1) : Color.clear, lineWidth: 1.3))
+        .background(
+            RoundedRectangle(cornerRadius: 9).fill(
+                darkMode ? Color("AlwaysDarkBackground") : Color("AlwaysLightBackground")
+            ).shadow(color: darkMode ? Color.clear : Color.gray.opacity(0.25), radius: 6)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 9).stroke(
+                darkMode ? Color.gray.opacity(0.1) : Color.clear, lineWidth: 1.3)
+        )
         .onChange(of: timeframe) { _ in
             if timeframe == .week {
                 chartType = 1
@@ -2186,7 +2534,8 @@ struct ChartTimePickerView: View {
 struct AnimatedBarGraph: View {
     var index: Int
 
-    @AppStorage("animated", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var animated: Bool = true
+    @AppStorage("animated", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var animated:
+        Bool = true
     @State var showBar: Bool = false
 
     var body: some View {
@@ -2202,7 +2551,10 @@ struct AnimatedBarGraph: View {
                 if !animated {
                     showBar = true
                 } else {
-                    withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.8).delay(Double(index) * 0.1)) {
+                    withAnimation(
+                        .interactiveSpring(response: 0.6, dampingFraction: 0.8, blendDuration: 0.8)
+                            .delay(Double(index) * 0.1)
+                    ) {
                         showBar = true
                     }
                 }
@@ -2212,7 +2564,8 @@ struct AnimatedBarGraph: View {
 }
 
 struct AnimatedHorizontalBarGraph: View {
-    @AppStorage("animated", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var animated: Bool = true
+    @AppStorage("animated", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var animated:
+        Bool = true
     var category: PowerCategory
     var index: Int
 
@@ -2221,22 +2574,26 @@ struct AnimatedHorizontalBarGraph: View {
     var body: some View {
         HStack(spacing: 0) {
             RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(category.category.income ? Color(hex: Color.colorArray[index]) : Color(hex: category.category.wrappedColour))
+                .fill(
+                    category.category.income
+                        ? Color(hex: Color.colorArray[index])
+                        : Color(hex: category.category.wrappedColour)
+                )
                 .frame(width: showBar ? nil : 0, alignment: .leading)
 
             Spacer(minLength: 0)
         }
-//        .onAppear {
-//            DispatchQueue.main.asyncAfter(deadline: .now()) {
-//                if !animated {
-//                    showBar = true
-//                } else {
-//                    withAnimation(.easeInOut(duration: 0.7).delay(Double(index) * 0.5)) {
-//                        showBar = true
-//                    }
-//                }
-//            }
-//        }
+        //        .onAppear {
+        //            DispatchQueue.main.asyncAfter(deadline: .now()) {
+        //                if !animated {
+        //                    showBar = true
+        //                } else {
+        //                    withAnimation(.easeInOut(duration: 0.7).delay(Double(index) * 0.5)) {
+        //                        showBar = true
+        //                    }
+        //                }
+        //            }
+        //        }
     }
 }
 
@@ -2263,9 +2620,10 @@ struct InsightsDollarView: View {
             Group {
                 Text(symbol)
                     .font(.system(.title3, design: .rounded).weight(.medium))
-                    .foregroundColor(Color.SubtitleText) +
+                    .foregroundColor(Color.SubtitleText)
+                    +
 
-                Text("\(amount, specifier: showCents && amount < 100 ? "%.2f" : "%.0f")")
+                    Text("\(amount, specifier: showCents && amount < 100 ? "%.2f" : "%.0f")")
                     .font(.system(.title, design: .rounded).weight(.medium))
                     .foregroundColor(Color.PrimaryText)
             }
@@ -2330,13 +2688,13 @@ struct SwipeArrowView: View {
         VStack(spacing: 8) {
             Image(systemName: left ? "arrow.backward.circle.fill" : "arrow.forward.circle.fill")
                 .font(.system(.body, design: .rounded).weight(.medium))
-//                                        .font(.system(size: 18, weight: .medium))
+                //                                        .font(.system(size: 18, weight: .medium))
                 //                                .scaleEffect(changeTime ? 1.3 : 1)
                 .foregroundColor(changeTime ? Color.PrimaryText : Color.SecondaryBackground)
 
             Text(swipeString)
                 .font(.system(.subheadline, design: .rounded).weight(.semibold))
-//                                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                //                                        .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .multilineTextAlignment(.center)
                 .foregroundColor(changeTime ? Color.PrimaryText : Color.SecondaryBackground)
         }
@@ -2351,12 +2709,12 @@ struct SwipeEndView: View {
         VStack(spacing: 8) {
             Image(systemName: left ? "eyeglasses" : "sun.haze.fill")
                 .font(.system(.title2, design: .rounded).weight(.medium))
-//                                        .font(.system(size: 22, weight: .medium))
+                //                                        .font(.system(size: 22, weight: .medium))
                 .foregroundColor(Color.SubtitleText)
 
             Text(left ? "That's all, buddy." : "Into the unknown.")
                 .font(.system(.subheadline, design: .rounded).weight(.semibold))
-//                                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                //                                        .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .frame(width: 90)
                 .multilineTextAlignment(.center)
                 .foregroundColor(Color.SubtitleText)

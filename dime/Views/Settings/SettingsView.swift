@@ -16,7 +16,7 @@ import WidgetKit
 struct SettingsView: View {
   @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-  @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var colourScheme: Int = 0
   var colourSchemeString: String {
     if colourScheme == 1 {
@@ -28,7 +28,7 @@ struct SettingsView: View {
     }
   }
 
-  @AppStorage("activeIcon", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("activeIcon", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var activeIcon: String = "AppIcon"
   var appIconString: String {
     if activeIcon == "AppIcon1" {
@@ -42,7 +42,7 @@ struct SettingsView: View {
     }
   }
 
-  @AppStorage("firstWeekday", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("firstWeekday", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var firstWeekday: Int = 1
   var firstWeekdayString: String {
     if firstWeekday == 1 {
@@ -52,9 +52,9 @@ struct SettingsView: View {
     }
   }
 
-  @AppStorage("showNotifications", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("showNotifications", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var showNotifications: Bool = false
-  @AppStorage("notificationOption", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("notificationOption", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var option: Int = 1
   var notificationString: String {
     if showNotifications {
@@ -86,7 +86,7 @@ struct SettingsView: View {
   let featureRequestEmail = SupportEmail(
     toAddress: "rafasohhh@gmail.com", subject: "Feature Request")
 
-  @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var numberEntryType: Int = 2
 
   var numberEntryString: String {
@@ -97,20 +97,20 @@ struct SettingsView: View {
     }
   }
 
-  @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var showCents: Bool = true
 
-  @AppStorage("animated", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var animated:
+  @AppStorage("animated", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var animated:
     Bool = true
 
-  @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency:
+  @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
     String = Locale.current.currencyCode!
 
-  @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("incomeTracking", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var incomeTracking: Bool = true
 
   @AppStorage(
-    "showUpcomingTransactions", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+    "showUpcomingTransactions", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var showUpcoming: Bool = true
 
   var upcomingString: String {
@@ -121,18 +121,18 @@ struct SettingsView: View {
     }
   }
 
-    @AppStorage("haptics", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
-    var hapticType: Int = 1
+  @AppStorage("haptics", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+  var hapticType: Int = 1
 
-    var hapticString: String {
-      if hapticType == 0 {
-        return String(localized: "None")
-      } else if hapticType == 1 {
-        return String(localized: "Subtle")
-      } else {
-        return String(localized: "Excessive")
-      }
+  var hapticString: String {
+    if hapticType == 0 {
+      return String(localized: "None")
+    } else if hapticType == 1 {
+      return String(localized: "Subtle")
+    } else {
+      return String(localized: "Excessive")
     }
+  }
 
   // popups
 
@@ -225,9 +225,9 @@ struct SettingsView: View {
                   incomeTracking.toggle()
 
                   if !incomeTracking {
-                    UserDefaults(suiteName: "group.com.rafaelsoh.dime")!.set(
+                    UserDefaults(suiteName: "group.wtf.savva.dime")!.set(
                       false, forKey: "insightsViewIncomeFiltering")
-                    UserDefaults(suiteName: "group.com.rafaelsoh.dime")!.set(
+                    UserDefaults(suiteName: "group.wtf.savva.dime")!.set(
                       3, forKey: "logInsightsType")
                   }
                 })
@@ -337,16 +337,17 @@ struct SettingsView: View {
 
             VStack(spacing: 13) {
               ToggleRow(
-                icon: "hare.fill", color: "121", text: "Animated Charts", bool: animated, smaller: true,
+                icon: "hare.fill", color: "121", text: "Animated Charts", bool: animated,
+                smaller: true,
                 onTap: {
                   animated.toggle()
                 })
 
-                NavigationLink(destination: SettingsHapticsView()) {
-                  SettingsRowView(
-                    systemImage: "hand.tap.fill", title: "Haptics", colour: 100,
-                    optionalText: hapticString)
-                }
+              NavigationLink(destination: SettingsHapticsView()) {
+                SettingsRowView(
+                  systemImage: "hand.tap.fill", title: "Haptics", colour: 100,
+                  optionalText: hapticString)
+              }
 
               NavigationLink(destination: SettingsGoofyView()) {
                 SettingsRowView(systemImage: "flame.fill", title: "Feature Lab", colour: 122)
@@ -460,11 +461,15 @@ struct SettingsView: View {
   }
 
   @ViewBuilder
-    func ToggleRow(icon: String, color: String, text: String, bool: Bool, smaller: Bool = false, onTap: @escaping () -> Void)
-    -> some View {
+  func ToggleRow(
+    icon: String, color: String, text: String, bool: Bool, smaller: Bool = false,
+    onTap: @escaping () -> Void
+  )
+    -> some View
+  {
     HStack(spacing: 12) {
       Image(systemName: icon)
-            .font(.system(smaller ? .subheadline : .body, design: .rounded))
+        .font(.system(smaller ? .subheadline : .body, design: .rounded))
         .foregroundColor(.white)
         .frame(
           width: dynamicTypeSize > .xLarge ? 40 : 30, height: dynamicTypeSize > .xLarge ? 40 : 30,
@@ -571,7 +576,7 @@ struct TipJarAlert: View {
 
   @State private var offset: CGFloat = 0
 
-  @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var bottomEdge: Double = 15
 
   @State var opacity = 0.0
@@ -786,11 +791,11 @@ struct ProductView: View {
   }
 
   func getText(_ string: String) -> String {
-    if string == "com.rafaelsoh.dime.smalltip" {
+    if string == "wtf.savva.dime.smalltip" {
       return String(localized: "☕ Coffee-Sized Tip")
-    } else if string == "com.rafaelsoh.dime.mediumtip" {
+    } else if string == "wtf.savva.dime.mediumtip" {
       return String(localized: "🌮 Taco-Sized Tip")
-    } else if string == "com.rafaelsoh.dime.largetip" {
+    } else if string == "wtf.savva.dime.largetip" {
       return String(localized: "🍕 Pizza-Sized Tip")
     } else {
       return ""

@@ -16,11 +16,13 @@ struct TemplateTransactionView: View {
     @EnvironmentObject var dataController: DataController
     @Environment(\.dismiss) var dismiss
 
-    @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var numberEntryType: Int = 1
+    @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var numberEntryType: Int = 1
 
     @Environment(\.colorScheme) var colorScheme
 
-    @AppStorage("topEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var topEdge: Double = 30
+    @AppStorage("topEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var topEdge:
+        Double = 30
 
     @State private var note = ""
     @State var category: Category?
@@ -71,7 +73,8 @@ struct TemplateTransactionView: View {
     @State var showCategoryPicker = false
     @State var showCategorySheet = false
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
@@ -85,7 +88,9 @@ struct TemplateTransactionView: View {
 
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper()
 
-    @AppStorage("firstTransactionViewLaunch", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var firstLaunch: Bool = true
+    @AppStorage(
+        "firstTransactionViewLaunch", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var firstLaunch: Bool = true
 
     // edit mode
     let toEdit: TemplateTransaction?
@@ -95,7 +100,8 @@ struct TemplateTransactionView: View {
     @State var toDelete: TemplateTransaction?
     @State var deleteMode = false
 
-    @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var bottomEdge: Double = 15
+    @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var bottomEdge: Double = 15
 
     @State private var offset: CGFloat = 0
 
@@ -119,11 +125,17 @@ struct TemplateTransactionView: View {
             amountText = String(format: "%.2f", transactionValue)
         }
 
-        if (amountText.widthOfRoundedString(size: 32, weight: .regular) + currencySymbol.widthOfRoundedString(size: 20, weight: .light) + 4) > size {
+        if (amountText.widthOfRoundedString(size: 32, weight: .regular)
+            + currencySymbol.widthOfRoundedString(size: 20, weight: .light) + 4) > size
+        {
             return (24, 16)
-        } else if (amountText.widthOfRoundedString(size: 44, weight: .regular) + currencySymbol.widthOfRoundedString(size: 25, weight: .light) + 4) > size {
+        } else if (amountText.widthOfRoundedString(size: 44, weight: .regular)
+            + currencySymbol.widthOfRoundedString(size: 25, weight: .light) + 4) > size
+        {
             return (32, 20)
-        } else if (amountText.widthOfRoundedString(size: 56, weight: .regular) + currencySymbol.widthOfRoundedString(size: 32, weight: .light) + 4) > size {
+        } else if (amountText.widthOfRoundedString(size: 56, weight: .regular)
+            + currencySymbol.widthOfRoundedString(size: 32, weight: .light) + 4) > size
+        {
             return (44, 25)
         } else {
             return (56, 32)
@@ -142,7 +154,8 @@ struct TemplateTransactionView: View {
         }
     }
 
-    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var colourScheme: Int = 0
+    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var colourScheme: Int = 0
 
     @Environment(\.colorScheme) var systemColorScheme
 
@@ -166,7 +179,7 @@ struct TemplateTransactionView: View {
     @Namespace var animation
 
     var body: some View {
-//        ScrollView {
+        //        ScrollView {
         GeometryReader { proxy in
             VStack(spacing: 8) {
                 // income/expense picker
@@ -182,14 +195,19 @@ struct TemplateTransactionView: View {
                                 .foregroundColor(Color.AlertRed)
                         }
                         .padding(8)
-                        .background(Color.AlertRed.opacity(0.23), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                        .background(
+                            Color.AlertRed.opacity(0.23),
+                            in: RoundedRectangle(cornerRadius: 9, style: .continuous)
+                        )
                         .transition(AnyTransition.opacity.combined(with: .move(edge: .top)))
                         .frame(maxWidth: 200)
                     } else {
                         HStack(spacing: 0) {
                             Text("Expense")
                                 .font(.system(size: 18, weight: .semibold, design: .rounded))
-                                .foregroundColor(income == false ? Color.PrimaryText : Color.SubtitleText)
+                                .foregroundColor(
+                                    income == false ? Color.PrimaryText : Color.SubtitleText
+                                )
                                 .padding(6)
                                 .padding(.horizontal, 8)
                                 .background {
@@ -211,7 +229,9 @@ struct TemplateTransactionView: View {
 
                             Text("transaction-view-income-picker")
                                 .font(.system(size: 18, weight: .semibold, design: .rounded))
-                                .foregroundColor(income == true ? Color.PrimaryText : Color.SubtitleText)
+                                .foregroundColor(
+                                    income == true ? Color.PrimaryText : Color.SubtitleText
+                                )
                                 .padding(6)
                                 .padding(.horizontal, 8)
                                 .background {
@@ -276,7 +296,9 @@ struct TemplateTransactionView: View {
                                     .font(.system(size: 16, weight: .semibold))
                                     .overlay(alignment: .topTrailing) {
                                         Text(repeatOverlays[repeatType - 1])
-                                            .font(.system(size: 6, weight: .black, design: .rounded))
+                                            .font(
+                                                .system(size: 6, weight: .black, design: .rounded)
+                                            )
                                             .foregroundColor(Color.IncomeGreen)
                                             .frame(width: 10, alignment: .leading)
                                             .offset(x: 5.7, y: 1.5)
@@ -296,17 +318,23 @@ struct TemplateTransactionView: View {
                         }
                         .accessibilityRemoveTraits(.isButton)
                         .accessibilityLabel(repeatButtonAccessibility)
-                        .popover(present: $showRecurring, attributes: {
-                            $0.position = .absolute(
-                                originAnchor: .bottom,
-                                popoverAnchor: .top
-                            )
-                            $0.rubberBandingMode = .none
-                            $0.sourceFrameInset = UIEdgeInsets(top: 0, left: 0, bottom: -10, right: 0)
-                            $0.presentation.animation = .easeInOut(duration: 0.2)
-                            $0.dismissal.animation = .easeInOut(duration: 0.3)
-                        }) {
-                            RecurringPickerView(repeatType: $repeatType, repeatCoefficient: $repeatCoefficient, showMenu: $showRecurring, showPicker: $showPicker)
+                        .popover(
+                            present: $showRecurring,
+                            attributes: {
+                                $0.position = .absolute(
+                                    originAnchor: .bottom,
+                                    popoverAnchor: .top
+                                )
+                                $0.rubberBandingMode = .none
+                                $0.sourceFrameInset = UIEdgeInsets(
+                                    top: 0, left: 0, bottom: -10, right: 0)
+                                $0.presentation.animation = .easeInOut(duration: 0.2)
+                                $0.dismissal.animation = .easeInOut(duration: 0.3)
+                            }
+                        ) {
+                            RecurringPickerView(
+                                repeatType: $repeatType, repeatCoefficient: $repeatCoefficient,
+                                showMenu: $showRecurring, showPicker: $showPicker)
                         } background: {
                             backgroundColor.opacity(0.6)
                         }
@@ -320,11 +348,16 @@ struct TemplateTransactionView: View {
                     if numberEntryType == 1 {
                         HStack(alignment: .lastTextBaseline, spacing: 4) {
                             Text(currencySymbol)
-                                .font(.system(size: downsize.small, weight: .light, design: .rounded))
+                                .font(
+                                    .system(size: downsize.small, weight: .light, design: .rounded)
+                                )
                                 .foregroundColor(Color.SubtitleText)
-                                .baselineOffset(getDollarOffset(big: downsize.big, small: downsize.small))
+                                .baselineOffset(
+                                    getDollarOffset(big: downsize.big, small: downsize.small))
                             Text("\(transactionValue, specifier: "%.2f")")
-                                .font(.system(size: downsize.big, weight: .regular, design: .rounded))
+                                .font(
+                                    .system(size: downsize.big, weight: .regular, design: .rounded)
+                                )
                                 .foregroundColor(Color.PrimaryText)
                         }
                     } else {
@@ -342,11 +375,18 @@ struct TemplateTransactionView: View {
                         } else {
                             HStack(alignment: .lastTextBaseline, spacing: 4) {
                                 Text(currencySymbol)
-                                    .font(.system(size: downsize.small, weight: .light, design: .rounded))
+                                    .font(
+                                        .system(
+                                            size: downsize.small, weight: .light, design: .rounded)
+                                    )
                                     .foregroundColor(Color.SubtitleText)
-                                    .baselineOffset(getDollarOffset(big: downsize.big, small: downsize.small))
+                                    .baselineOffset(
+                                        getDollarOffset(big: downsize.big, small: downsize.small))
                                 Text(amount)
-                                    .font(.system(size: downsize.big, weight: .regular, design: .rounded))
+                                    .font(
+                                        .system(
+                                            size: downsize.big, weight: .regular, design: .rounded)
+                                    )
                                     .foregroundColor(Color.PrimaryText)
                             }
                             .frame(maxWidth: .infinity)
@@ -388,10 +428,14 @@ struct TemplateTransactionView: View {
                                     Image("tag-cross")
                                         .resizable()
                                         .frame(width: 32, height: 32)
-                                        .frame(width: proxy.size.width * 0.3, height: proxy.size.height * 0.22)
+                                        .frame(
+                                            width: proxy.size.width * 0.3,
+                                            height: proxy.size.height * 0.22
+                                        )
                                         .background(Color.DarkBackground)
                                         .foregroundColor(Color.LightIcon)
-                                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 10, style: .continuous))
                                 }
                                 .buttonStyle(NumPadButton())
                             } else {
@@ -407,10 +451,15 @@ struct TemplateTransactionView: View {
                                 } label: {
                                     Text(".")
                                         .font(.system(size: 34, weight: .regular, design: .rounded))
-                                        .frame(width: proxy.size.width * 0.3, height: proxy.size.height * 0.22)
+                                        .frame(
+                                            width: proxy.size.width * 0.3,
+                                            height: proxy.size.height * 0.22
+                                        )
                                         .background(Color.SecondaryBackground)
                                         .foregroundColor(Color.PrimaryText)
-                                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                        .clipShape(
+                                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        )
                                         .opacity(numbers1.contains(".") ? 0.6 : 1)
                                 }
                                 .disabled(numbers1.contains("."))
@@ -425,17 +474,27 @@ struct TemplateTransactionView: View {
                                 Group {
                                     if #available(iOS 17.0, *) {
                                         Image(systemName: "checkmark.square.fill")
-                                            .font(.system(size: 30, weight: .medium, design: .rounded))
-                                            .symbolEffect(.bounce.up.byLayer, value: transactionValue != 0 && category != nil)
-//                                            .symbolEffectsRemoved()
+                                            .font(
+                                                .system(size: 30, weight: .medium, design: .rounded)
+                                            )
+                                            .symbolEffect(
+                                                .bounce.up.byLayer,
+                                                value: transactionValue != 0 && category != nil)
+                                        //                                            .symbolEffectsRemoved()
                                     } else {
                                         Image(systemName: "checkmark.square.fill")
-                                            .font(.system(size: 30, weight: .medium, design: .rounded))
+                                            .font(
+                                                .system(size: 30, weight: .medium, design: .rounded)
+                                            )
                                     }
                                 }
-                                .frame(width: proxy.size.width * 0.3, height: proxy.size.height * 0.22)
+                                .frame(
+                                    width: proxy.size.width * 0.3, height: proxy.size.height * 0.22
+                                )
                                 .foregroundColor(Color.LightIcon)
-                                .background(Color.DarkBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                .background(
+                                    Color.DarkBackground,
+                                    in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                             }
                             .buttonStyle(NumPadButton())
                         }
@@ -443,7 +502,7 @@ struct TemplateTransactionView: View {
                     .frame(width: proxy.size.width, height: proxy.size.height)
                 }
                 .padding(.bottom, 15)
-//                .keyboardAwareHeight()
+                //                .keyboardAwareHeight()
             }
             .padding(17)
             .frame(width: proxy.size.width, height: proxy.size.height)
@@ -489,7 +548,9 @@ struct TemplateTransactionView: View {
                                 .foregroundColor(.white)
                                 .frame(height: 45)
                                 .frame(maxWidth: .infinity)
-                                .background(Color.AlertRed, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                                .background(
+                                    Color.AlertRed,
+                                    in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                         }
                         .padding(.bottom, 8)
 
@@ -505,12 +566,22 @@ struct TemplateTransactionView: View {
                                 .foregroundColor(Color.PrimaryText.opacity(0.9))
                                 .frame(height: 45)
                                 .frame(maxWidth: .infinity)
-                                .background(Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                                .background(
+                                    Color.SecondaryBackground,
+                                    in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                         }
                     }
                     .padding(13)
-                    .background(RoundedRectangle(cornerRadius: 13).fill(Color.PrimaryBackground).shadow(color: systemColorScheme == .dark ? Color.clear : Color.gray.opacity(0.25), radius: 6))
-                    .overlay(RoundedRectangle(cornerRadius: 13).stroke(systemColorScheme == .dark ? Color.gray.opacity(0.1) : Color.clear, lineWidth: 1.3))
+                    .background(
+                        RoundedRectangle(cornerRadius: 13).fill(Color.PrimaryBackground).shadow(
+                            color: systemColorScheme == .dark
+                                ? Color.clear : Color.gray.opacity(0.25), radius: 6)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 13).stroke(
+                            systemColorScheme == .dark ? Color.gray.opacity(0.1) : Color.clear,
+                            lineWidth: 1.3)
+                    )
                     .offset(y: offset)
                     .gesture(
                         DragGesture()
@@ -576,10 +647,15 @@ struct TemplateTransactionView: View {
         }
         .sheet(isPresented: $showPicker) {
             if #available(iOS 16.0, *) {
-                CustomRecurringView(repeatType: $repeatType, repeatCoefficient: $repeatCoefficient, showPicker: $showPicker)
-                    .presentationDetents([.height(230)])
+                CustomRecurringView(
+                    repeatType: $repeatType, repeatCoefficient: $repeatCoefficient,
+                    showPicker: $showPicker
+                )
+                .presentationDetents([.height(230)])
             } else {
-                CustomRecurringView(repeatType: $repeatType, repeatCoefficient: $repeatCoefficient, showPicker: $showPicker)
+                CustomRecurringView(
+                    repeatType: $repeatType, repeatCoefficient: $repeatCoefficient,
+                    showPicker: $showPicker)
             }
         }
     }
@@ -751,8 +827,14 @@ struct TemplateTransactionView: View {
 }
 
 struct CategoryRowPickerView: View {
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.order)], predicate: NSPredicate(format: "income = %d", false)) private var expenseCategories: FetchedResults<Category>
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.order)], predicate: NSPredicate(format: "income = %d", true)) private var incomeCategories: FetchedResults<Category>
+    @FetchRequest(
+        sortDescriptors: [SortDescriptor(\.order)],
+        predicate: NSPredicate(format: "income = %d", false)) private var expenseCategories:
+        FetchedResults<Category>
+    @FetchRequest(
+        sortDescriptors: [SortDescriptor(\.order)],
+        predicate: NSPredicate(format: "income = %d", true)) private var incomeCategories:
+        FetchedResults<Category>
 
     @Binding var selectedCategory: Category?
     @State var showCategorySheet = false
@@ -786,23 +868,41 @@ struct CategoryRowPickerView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             ScrollViewReader { value in
                                 HStack(spacing: 8) {
-                                    ForEach(income ? incomeCategories : expenseCategories, id: \.self) { item in
+                                    ForEach(
+                                        income ? incomeCategories : expenseCategories, id: \.self
+                                    ) { item in
                                         HStack(spacing: 5) {
                                             Text(item.wrappedEmoji)
                                                 .font(.system(size: 13))
                                             Text(item.wrappedName)
-                                                .font(.system(size: 17.5, weight: .medium, design: .rounded))
+                                                .font(
+                                                    .system(
+                                                        size: 17.5, weight: .medium,
+                                                        design: .rounded))
                                         }
                                         .id(item.id)
                                         .padding(.horizontal, 10)
                                         .frame(height: 36)
-                                        .foregroundColor(selectedCategory == item ? (item.income ? Color.IncomeGreen : Color(hex: item.wrappedColour)) : Color.PrimaryText)
-                                        .background(getBackground(category: item), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                        .foregroundColor(
+                                            selectedCategory == item
+                                                ? (item.income
+                                                    ? Color.IncomeGreen
+                                                    : Color(hex: item.wrappedColour))
+                                                : Color.PrimaryText
+                                        )
+                                        .background(
+                                            getBackground(category: item),
+                                            in: RoundedRectangle(
+                                                cornerRadius: 10, style: .continuous)
+                                        )
                                         .overlay {
                                             if selectedCategory != item {
-                                                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                                    .strokeBorder(Color.Outline,
-                                                                  style: StrokeStyle(lineWidth: 1.5))
+                                                RoundedRectangle(
+                                                    cornerRadius: 10, style: .continuous
+                                                )
+                                                .strokeBorder(
+                                                    Color.Outline,
+                                                    style: StrokeStyle(lineWidth: 1.5))
                                             }
                                         }
                                         .onTapGesture {
@@ -838,14 +938,17 @@ struct CategoryRowPickerView: View {
                         // inject gradient at right side only
                         Rectangle()
                             .fill(
-                                LinearGradient(gradient: Gradient(stops: [
-                                    .init(color: Color.PrimaryBackground.opacity(0.01), location: 0),
-                                    .init(color: Color.PrimaryBackground, location: 1)
-                                ]), startPoint: .leading, endPoint: .trailing)
+                                LinearGradient(
+                                    gradient: Gradient(stops: [
+                                        .init(
+                                            color: Color.PrimaryBackground.opacity(0.01),
+                                            location: 0),
+                                        .init(color: Color.PrimaryBackground, location: 1),
+                                    ]), startPoint: .leading, endPoint: .trailing)
                             ).frame(width: 0.1 * gp.size.width)
                             .frame(maxWidth: .infinity, alignment: .trailing)
 
-                            .allowsHitTesting(false) // << now works !!
+                            .allowsHitTesting(false)  // << now works !!
 
                     }.fixedSize(horizontal: false, vertical: true)
                 }
@@ -864,17 +967,20 @@ struct CategoryRowPickerView: View {
                         .foregroundColor(Color.SubtitleText)
                 }
 
-//                        Text("Edit")
-//                            .font(.system(size: 17.5, weight: .semibold, design: .rounded))
-//                            .lineLimit(1)
+                //                        Text("Edit")
+                //                            .font(.system(size: 17.5, weight: .semibold, design: .rounded))
+                //                            .lineLimit(1)
             }
             .padding(.horizontal, 9)
             .frame(height: 36)
-            .background(Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: 11.5, style: .continuous)
-//                            .stroke(Color.Outline, lineWidth: 1.5)
-//                    )
+            .background(
+                Color.SecondaryBackground,
+                in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+            )
+            //                    .overlay(
+            //                        RoundedRectangle(cornerRadius: 11.5, style: .continuous)
+            //                            .stroke(Color.Outline, lineWidth: 1.5)
+            //                    )
             .onTapGesture {
                 showCategorySheet = true
             }
@@ -903,10 +1009,10 @@ struct CategoryRowPickerView: View {
 
     init(category: Binding<Category?>?, income: Bool) {
         _selectedCategory = category ?? Binding.constant(nil)
-//        self.categories = categories
-//        let dataController = DataController.shared
-//        let fetchRequest = dataController.fetchRequestForCategories(income: income)
-//        self.categories = dataController.results(for: fetchRequest)
+        //        self.categories = categories
+        //        let dataController = DataController.shared
+        //        let fetchRequest = dataController.fetchRequestForCategories(income: income)
+        //        self.categories = dataController.results(for: fetchRequest)
         self.income = income
     }
 }
@@ -948,9 +1054,11 @@ struct SettingsQuickAddWidgetView: View {
 }
 
 struct SettingsQuickAddWidgetDraggingView: View {
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
 
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
@@ -970,78 +1078,110 @@ struct SettingsQuickAddWidgetDraggingView: View {
 
     var body: some View {
         ZStack {
-            LazyVGrid(columns: columns, spacing: 15, content: {
-                ForEach(0 ..< 4) { index in
+            LazyVGrid(
+                columns: columns, spacing: 15,
+                content: {
+                    ForEach(0..<4) { index in
 
-                    Image(systemName: "plus")
-                        .font(.system(size: 25, weight: .semibold, design: .rounded))
-                        .foregroundStyle(Color.SubtitleText)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(RoundedRectangle(cornerRadius: 15).fill(Color.SecondaryBackground).shadow(color: gridData.gridItems[index].transaction == nil ? Color.gray.opacity(0.25) : Color.clear, radius: 6))
-                        .overlay(RoundedRectangle(cornerRadius: 15).stroke(Color.Outline, lineWidth: 1.3))
-                        .frame(height: 100)
-                }
-            })
+                        Image(systemName: "plus")
+                            .font(.system(size: 25, weight: .semibold, design: .rounded))
+                            .foregroundStyle(Color.SubtitleText)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 15).fill(Color.SecondaryBackground)
+                                    .shadow(
+                                        color: gridData.gridItems[index].transaction == nil
+                                            ? Color.gray.opacity(0.25) : Color.clear, radius: 6)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15).stroke(
+                                    Color.Outline, lineWidth: 1.3)
+                            )
+                            .frame(height: 100)
+                    }
+                })
 
-            LazyVGrid(columns: columns, spacing: 15, content: {
-                ForEach(gridData.gridItems) { grid in
+            LazyVGrid(
+                columns: columns, spacing: 15,
+                content: {
+                    ForEach(gridData.gridItems) { grid in
 
-                    Group {
-                        if let transaction = grid.transaction {
-                            if grid.id == gridData.currentGrid?.id && gridData.dragging {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .fill(blend(over: Color(hex: transaction.wrappedColour), withAlpha: 0.7))
+                        Group {
+                            if let transaction = grid.transaction {
+                                if grid.id == gridData.currentGrid?.id && gridData.dragging {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .fill(
+                                                blend(
+                                                    over: Color(hex: transaction.wrappedColour),
+                                                    withAlpha: 0.7))
 
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .strokeBorder(Color.DarkIcon, lineWidth: 2)
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .strokeBorder(Color.DarkIcon, lineWidth: 2)
+                                    }
+                                } else {
+                                    SingleTemplateButton(
+                                        transaction: transaction, showCents: showCents,
+                                        currencySymbol: currencySymbol)
                                 }
                             } else {
-                                SingleTemplateButton(transaction: transaction, showCents: showCents, currencySymbol: currencySymbol)
+                                Rectangle()
+                                    .fill(Color.clear)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .contentShape(Rectangle())
                             }
-                        } else {
-                            Rectangle()
-                                .fill(Color.clear)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .contentShape(Rectangle())
                         }
-                    }
-                    .frame(height: 100)
-                    .transition(.opacity)
-                    .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 15))
-                    .onDrag({
-                        gridData.currentGrid = grid
-                        return NSItemProvider(object: String(grid.index) as NSString)
-                    }, preview: {
-                        if let transaction = grid.transaction {
-                            SingleTemplateButton(transaction: transaction, showCents: showCents, currencySymbol: currencySymbol)
-                                .frame(width: 100, height: 100)
-                                .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 15))
+                        .frame(height: 100)
+                        .transition(.opacity)
+                        .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 15))
+                        .onDrag(
+                            {
+                                gridData.currentGrid = grid
+                                return NSItemProvider(object: String(grid.index) as NSString)
+                            },
+                            preview: {
+                                if let transaction = grid.transaction {
+                                    SingleTemplateButton(
+                                        transaction: transaction, showCents: showCents,
+                                        currencySymbol: currencySymbol
+                                    )
+                                    .frame(width: 100, height: 100)
+                                    .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 15))
+                                }
+                            }
+                        )
+                        .onDrop(
+                            of: [.text], delegate: DropViewDelegate(grid: grid, gridData: gridData)
+                        )
+                        .onTapGesture {
+                            selectedItem = grid
+                            print(grid.index)
+                            lastSelectedIndex = grid.index
                         }
-                    })
-                    .onDrop(of: [.text], delegate: DropViewDelegate(grid: grid, gridData: gridData))
-                    .onTapGesture {
-                        selectedItem = grid
-                        print(grid.index)
-                        lastSelectedIndex = grid.index
                     }
                 }
-            })
+            )
             .id(refreshID)
-//
-//            VStack {
-//                ForEach(transactions) { transaction in
-//                    Text(transaction.category?.wrappedName ?? "")
-//                }
-//            }
+            //
+            //            VStack {
+            //                ForEach(transactions) { transaction in
+            //                    Text(transaction.category?.wrappedName ?? "")
+            //                }
+            //            }
         }
         .padding(15)
         .frame(width: 245)
-        .background(RoundedRectangle(cornerRadius: 25).fill(Color.PrimaryBackground).shadow(color: Color.gray.opacity(0.2), radius: 12))
-        .fullScreenCover(item: $selectedItem, onDismiss: {
-            gridData.reset()
-            refreshID = UUID()
-        }) { grid in
+        .background(
+            RoundedRectangle(cornerRadius: 25).fill(Color.PrimaryBackground).shadow(
+                color: Color.gray.opacity(0.2), radius: 12)
+        )
+        .fullScreenCover(
+            item: $selectedItem,
+            onDismiss: {
+                gridData.reset()
+                refreshID = UUID()
+            }
+        ) { grid in
             TemplateTransactionView(order: grid.index)
         }
     }
@@ -1068,9 +1208,13 @@ struct SingleTemplateButton: View {
             amountText = String(format: "%.0f", transaction.amount)
         }
 
-        if amountText.widthOfRoundedString(size: 16, weight: .semibold) + currencySymbol.widthOfRoundedString(size: 13, weight: .medium) + 2 > size {
+        if amountText.widthOfRoundedString(size: 16, weight: .semibold)
+            + currencySymbol.widthOfRoundedString(size: 13, weight: .medium) + 2 > size
+        {
             return (12, 9, amountText)
-        } else if amountText.widthOfRoundedString(size: 21, weight: .semibold) + currencySymbol.widthOfRoundedString(size: 18, weight: .medium) + 2 > size {
+        } else if amountText.widthOfRoundedString(size: 21, weight: .semibold)
+            + currencySymbol.widthOfRoundedString(size: 18, weight: .medium) + 2 > size
+        {
             return (16, 13, amountText)
         } else {
             return (21, 18, amountText)
@@ -1090,7 +1234,9 @@ struct SingleTemplateButton: View {
             Text(transaction.wrappedEmoji)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .padding(5)
-                .background(blend(over: transactionColor, withAlpha: 0.3), in: RoundedRectangle(cornerRadius: 8))
+                .background(
+                    blend(over: transactionColor, withAlpha: 0.3),
+                    in: RoundedRectangle(cornerRadius: 8))
 
             Spacer()
 
@@ -1113,7 +1259,9 @@ struct SingleTemplateButton: View {
         }
         .padding(10)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        .background(blend(over: transactionColor, withAlpha: 0.8), in: RoundedRectangle(cornerRadius: 15))
+        .background(
+            blend(over: transactionColor, withAlpha: 0.8), in: RoundedRectangle(cornerRadius: 15)
+        )
         .shadow(color: transactionColor.opacity(0.8), radius: 6)
     }
 
@@ -1148,7 +1296,7 @@ class GridViewModel: ObservableObject {
         Grid(index: 0),
         Grid(index: 1),
         Grid(index: 2),
-        Grid(index: 3)
+        Grid(index: 3),
     ]
 
     func reset() {
@@ -1157,13 +1305,13 @@ class GridViewModel: ObservableObject {
                 Grid(index: 0),
                 Grid(index: 1),
                 Grid(index: 2),
-                Grid(index: 3)
+                Grid(index: 3),
             ]
         }
     }
 
     func updateIndices() {
-//        let dataController = DataController()
+        //        let dataController = DataController()
         let dataController = DataController.shared
         for (index, element) in gridItems.enumerated() {
             if let transaction = element.transaction {
@@ -1194,13 +1342,15 @@ struct DropViewDelegate: DropDelegate {
             }
         }
 
-        let fromIndex = gridData.gridItems.firstIndex { grid -> Bool in
-            grid.id == gridData.currentGrid?.id
-        } ?? 0
+        let fromIndex =
+            gridData.gridItems.firstIndex { grid -> Bool in
+                grid.id == gridData.currentGrid?.id
+            } ?? 0
 
-        let toIndex = gridData.gridItems.firstIndex { grid -> Bool in
-            grid.id == self.grid.id
-        } ?? 0
+        let toIndex =
+            gridData.gridItems.firstIndex { grid -> Bool in
+                grid.id == self.grid.id
+            } ?? 0
 
         if fromIndex != toIndex {
             withAnimation(.easeIn(duration: 0.2)) {

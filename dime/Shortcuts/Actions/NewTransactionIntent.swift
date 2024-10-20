@@ -16,16 +16,25 @@ struct NewTransactionIntent: AppIntent {
     static var description =
         IntentDescription("Log new transactions in a blink")
 
-    @Parameter(title: "Type", description: "Type of the transaction", requestValueDialog: IntentDialog("Would you like to log an income or expense?"))
+    @Parameter(
+        title: "Type", description: "Type of the transaction",
+        requestValueDialog: IntentDialog("Would you like to log an income or expense?"))
     var income: TransactionType
 
-    @Parameter(title: "Amount", description: "Value of the transaction", controlStyle: .field, inclusiveRange: (lowerBound: 0.01, upperBound: 100_000_000), requestValueDialog: IntentDialog("How much was transacted?"))
+    @Parameter(
+        title: "Amount", description: "Value of the transaction", controlStyle: .field,
+        inclusiveRange: (lowerBound: 0.01, upperBound: 100_000_000),
+        requestValueDialog: IntentDialog("How much was transacted?"))
     var amount: Double
 
-    @Parameter(title: "Category", description: "Category associated with the transaction", requestValueDialog: IntentDialog("What category does it come under?"))
+    @Parameter(
+        title: "Category", description: "Category associated with the transaction",
+        requestValueDialog: IntentDialog("What category does it come under?"))
     var incomeCategory: IncomeCategoryEntity?
 
-    @Parameter(title: "Category", description: "Category associated with the transaction", requestValueDialog: IntentDialog("What category does it come under?"))
+    @Parameter(
+        title: "Category", description: "Category associated with the transaction",
+        requestValueDialog: IntentDialog("What category does it come under?"))
     var expenseCategory: ExpenseCategoryEntity?
 
     @Parameter(title: "Note")
@@ -37,34 +46,34 @@ struct NewTransactionIntent: AppIntent {
     @Parameter(title: "Recurring Frequency", default: .weekly)
     var recurringType: RepeatType
 
-//    struct CategoryOptionsProvider: DynamicOptionsProvider {
-//
-//        func results() async throws -> ItemCollection<CategoryEntity> {
-//            let dataController = DataController()
-//
-//            let categories = dataController.getAllCategories().map { CategoryEntity(id: $0.id!, name: $0.wrappedName, emoji: $0.wrappedEmoji, income: $0.income)
-//            }
-//
-//            let incomeCategories = categories.filter { $0.income }
-//            let expenseCategories = categories.filter { !$0.income }
-//
-//            return ItemCollection {
-//                ItemSection(
-//                    "Income Categories",
-//                    items: incomeCategories.map {
-//                        IntentItem<CategoryEntity>.init($0)
-//                    }
-//                )
-//                ItemSection(
-//                    "Expense Categories",
-//                    items: expenseCategories.map {
-//                        IntentItem<CategoryEntity>.init($0)
-//                    }
-//                )
-//
-//            }
-//        }
-//    }
+    //    struct CategoryOptionsProvider: DynamicOptionsProvider {
+    //
+    //        func results() async throws -> ItemCollection<CategoryEntity> {
+    //            let dataController = DataController()
+    //
+    //            let categories = dataController.getAllCategories().map { CategoryEntity(id: $0.id!, name: $0.wrappedName, emoji: $0.wrappedEmoji, income: $0.income)
+    //            }
+    //
+    //            let incomeCategories = categories.filter { $0.income }
+    //            let expenseCategories = categories.filter { !$0.income }
+    //
+    //            return ItemCollection {
+    //                ItemSection(
+    //                    "Income Categories",
+    //                    items: incomeCategories.map {
+    //                        IntentItem<CategoryEntity>.init($0)
+    //                    }
+    //                )
+    //                ItemSection(
+    //                    "Expense Categories",
+    //                    items: expenseCategories.map {
+    //                        IntentItem<CategoryEntity>.init($0)
+    //                    }
+    //                )
+    //
+    //            }
+    //        }
+    //    }
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
@@ -97,9 +106,12 @@ struct NewTransactionIntent: AppIntent {
 
             if income == .expense {
                 if let unwrappedExpenseCategory = expenseCategory {
-                    let category = try dataController.findCategory(withId: unwrappedExpenseCategory.id)
+                    let category = try dataController.findCategory(
+                        withId: unwrappedExpenseCategory.id)
 
-                    let transaction = dataController.newTransaction(note: note ?? "", category: category, income: false, amount: amount, date: Date.now, repeatType: repeatType, repeatCoefficient: 1, delay: false)
+                    let transaction = dataController.newTransaction(
+                        note: note ?? "", category: category, income: false, amount: amount,
+                        date: Date.now, repeatType: repeatType, repeatCoefficient: 1, delay: false)
 
                     return .result(dialog: "Expense successfully logged.") {
                         ShortcutTransactionView(transaction: transaction)
@@ -109,9 +121,12 @@ struct NewTransactionIntent: AppIntent {
                 }
             } else {
                 if let unwrappedIncomeCategory = incomeCategory {
-                    let category = try dataController.findCategory(withId: unwrappedIncomeCategory.id)
+                    let category = try dataController.findCategory(
+                        withId: unwrappedIncomeCategory.id)
 
-                    let transaction = dataController.newTransaction(note: note ?? "", category: category, income: true, amount: amount, date: Date.now, repeatType: repeatType, repeatCoefficient: 1, delay: false)
+                    let transaction = dataController.newTransaction(
+                        note: note ?? "", category: category, income: true, amount: amount,
+                        date: Date.now, repeatType: repeatType, repeatCoefficient: 1, delay: false)
 
                     return .result(dialog: "Income successfully logged.") {
                         ShortcutTransactionView(transaction: transaction)
@@ -126,32 +141,38 @@ struct NewTransactionIntent: AppIntent {
     static var parameterSummary: some ParameterSummary {
         Switch(\NewTransactionIntent.$income) {
             Case(TransactionType.expense) {
-                When(\NewTransactionIntent.$recurringTransaction, .equalTo, true, {
-                    Summary("Log an \(\.$income) of \(\.$amount) under \(\.$expenseCategory)") {
-                        \.$note
-                        \.$recurringTransaction
-                        \.$recurringType
-                    }
-                }, otherwise: {
-                    Summary("Log an \(\.$income) of \(\.$amount) under \(\.$expenseCategory)") {
-                        \.$note
-                        \.$recurringTransaction
-                    }
-                })
+                When(
+                    \NewTransactionIntent.$recurringTransaction, .equalTo, true,
+                    {
+                        Summary("Log an \(\.$income) of \(\.$amount) under \(\.$expenseCategory)") {
+                            \.$note
+                            \.$recurringTransaction
+                            \.$recurringType
+                        }
+                    },
+                    otherwise: {
+                        Summary("Log an \(\.$income) of \(\.$amount) under \(\.$expenseCategory)") {
+                            \.$note
+                            \.$recurringTransaction
+                        }
+                    })
             }
             Case(TransactionType.income) {
-                When(\NewTransactionIntent.$recurringTransaction, .equalTo, true, {
-                    Summary("Log an \(\.$income) of \(\.$amount) under \(\.$incomeCategory)") {
-                        \.$note
-                        \.$recurringTransaction
-                        \.$recurringType
-                    }
-                }, otherwise: {
-                    Summary("Log an \(\.$income) of \(\.$amount) under \(\.$incomeCategory)") {
-                        \.$note
-                        \.$recurringTransaction
-                    }
-                })
+                When(
+                    \NewTransactionIntent.$recurringTransaction, .equalTo, true,
+                    {
+                        Summary("Log an \(\.$income) of \(\.$amount) under \(\.$incomeCategory)") {
+                            \.$note
+                            \.$recurringTransaction
+                            \.$recurringType
+                        }
+                    },
+                    otherwise: {
+                        Summary("Log an \(\.$income) of \(\.$amount) under \(\.$incomeCategory)") {
+                            \.$note
+                            \.$recurringTransaction
+                        }
+                    })
             }
             DefaultCase {
                 Summary("Log an \(\.$income) of \(\.$amount)") {
@@ -175,10 +196,12 @@ extension TransactionType: AppEnum {
     }
 
     static var caseDisplayRepresentations: [TransactionType: DisplayRepresentation] = [
-        .income: DisplayRepresentation(title: "income",
-                                       image: .init(systemName: "plus.square.fill")),
-        .expense: DisplayRepresentation(title: "expense",
-                                        image: .init(systemName: "minus.square.fill"))
+        .income: DisplayRepresentation(
+            title: "income",
+            image: .init(systemName: "plus.square.fill")),
+        .expense: DisplayRepresentation(
+            title: "expense",
+            image: .init(systemName: "minus.square.fill")),
     ]
 }
 
@@ -195,16 +218,18 @@ extension RepeatType: AppEnum {
     static var caseDisplayRepresentations: [RepeatType: DisplayRepresentation] = [
         .daily: DisplayRepresentation(title: "Daily"),
         .weekly: DisplayRepresentation(title: "Weekly"),
-        .monthly: DisplayRepresentation(title: "Monthly")
+        .monthly: DisplayRepresentation(title: "Monthly"),
     ]
 }
 
 struct ShortcutTransactionView: View {
     let transaction: Transaction
 
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
 
     var transactionAmountString: String {
         let numberFormatter = NumberFormatter()
@@ -222,19 +247,23 @@ struct ShortcutTransactionView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            EmojiLogView(emoji: (transaction.category?.wrappedEmoji ?? ""),
-                         colour: (transaction.category?.wrappedColour ?? ""), future: false)
-                .frame(width: 35, height: 35, alignment: .center)
-                .overlay(alignment: .bottomTrailing) {
-                    if transaction.recurringType > 0 {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(Color.DarkIcon)
-                            .padding(3)
-                            .background(Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 6))
-                            .offset(x: 5, y: 5)
-                    }
+            EmojiLogView(
+                emoji: (transaction.category?.wrappedEmoji ?? ""),
+                colour: (transaction.category?.wrappedColour ?? ""), future: false
+            )
+            .frame(width: 35, height: 35, alignment: .center)
+            .overlay(alignment: .bottomTrailing) {
+                if transaction.recurringType > 0 {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(Color.DarkIcon)
+                        .padding(3)
+                        .background(
+                            Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 6)
+                        )
+                        .offset(x: 5, y: 5)
                 }
+            }
 
             VStack(alignment: .leading) {
                 Text(transaction.wrappedNote)

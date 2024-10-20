@@ -44,7 +44,8 @@ struct NewExpenseProvider: TimelineProvider {
         completion(entry)
     }
 
-    func getTimeline(in _: Context, completion: @escaping (Timeline<NewExpenseWidgetEntry>) -> Void) {
+    func getTimeline(in _: Context, completion: @escaping (Timeline<NewExpenseWidgetEntry>) -> Void)
+    {
         let entry = NewExpenseWidgetEntry(date: Date())
 
         let timeline = Timeline(entries: [entry], policy: .atEnd)
@@ -60,7 +61,8 @@ struct NewExpenseWidgetEntry: TimelineEntry {
 struct NewExpenseWidgetEntryView: View {
     let entry: NewExpenseProvider.Entry
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
@@ -71,11 +73,17 @@ struct NewExpenseWidgetEntryView: View {
                 AccessoryWidgetBackground()
 
                 Text("\(currencySymbol.count < 3 ? "+" : "")\(currencySymbol)")
-                    .font(.system(size: currencySymbol.count < 3 ? 13 : 11, weight: .bold, design: .rounded))
+                    .font(
+                        .system(
+                            size: currencySymbol.count < 3 ? 13 : 11, weight: .bold,
+                            design: .rounded)
+                    )
                     .foregroundColor(Color.SecondaryBackground)
                     .padding(.vertical, 2)
                     .frame(maxWidth: .infinity)
-                    .background(Color.white, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+                    .background(
+                        Color.white, in: RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    )
                     .padding(.horizontal, 9)
             }
             .widgetURL(URL(string: "dimeapp://newExpense"))
@@ -88,11 +96,17 @@ struct NewExpenseWidgetEntryView: View {
                     .fill(Color.SecondaryBackground.opacity(0.5))
 
                 Text("\(currencySymbol.count < 3 ? "+" : "")\(currencySymbol)")
-                    .font(.system(size: currencySymbol.count < 3 ? 13 : 11, weight: .bold, design: .rounded))
+                    .font(
+                        .system(
+                            size: currencySymbol.count < 3 ? 13 : 11, weight: .bold,
+                            design: .rounded)
+                    )
                     .foregroundColor(Color.SecondaryBackground)
                     .padding(.vertical, 2)
                     .frame(maxWidth: .infinity)
-                    .background(Color.white, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+                    .background(
+                        Color.white, in: RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    )
                     .padding(.horizontal, 9)
             }
             .padding(0.5)

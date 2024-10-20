@@ -12,9 +12,9 @@ import SwiftUI
 
 struct TransactionView: View {
     @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "income = %d", false)) private
-    var expenseCategories: FetchedResults<Category>
+        var expenseCategories: FetchedResults<Category>
     @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "income = %d", true)) private
-    var incomeCategories: FetchedResults<Category>
+        var incomeCategories: FetchedResults<Category>
 
     @Environment(\.managedObjectContext) var moc
     @EnvironmentObject var dataController: DataController
@@ -25,8 +25,8 @@ struct TransactionView: View {
         UIAccessibility.isBoldTextEnabled
     }
 
-    @AppStorage("topEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var topEdge:
-    Double = 20
+    @AppStorage("topEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var topEdge:
+        Double = 20
 
     @State private var note = ""
     @State var category: Category?
@@ -47,7 +47,8 @@ struct TransactionView: View {
     @State var showCategoryPicker = false
     @State var showCategorySheet = false
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
@@ -69,7 +70,7 @@ struct TransactionView: View {
     @ObservedObject var keyboardHeightHelper = KeyboardHeightHelper()
 
     @AppStorage(
-        "firstTransactionViewLaunch", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+        "firstTransactionViewLaunch", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
     var firstLaunch: Bool = true
 
     // edit mode
@@ -80,7 +81,7 @@ struct TransactionView: View {
     @State var toDelete: Transaction?
     @State var deleteMode = false
 
-    @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+    @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
     var bottomEdge: Double = 15
 
     @State private var offset: CGFloat = 0
@@ -138,7 +139,7 @@ struct TransactionView: View {
         }
     }
 
-    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
     var colourScheme: Int = 0
 
     @Environment(\.colorScheme) var systemColorScheme
@@ -168,16 +169,17 @@ struct TransactionView: View {
     @State var textFieldFocused: Bool = false
 
     @AppStorage(
-        "showTransactionRecommendations", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+        "showTransactionRecommendations", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
     var showRecommendations: Bool = false
 
     var suggestedTransactions: [Transaction] {
-        return dataController.getSuggestedNotes(searchQuery: note, category: category, income: income)
+        return dataController.getSuggestedNotes(
+            searchQuery: note, category: category, income: income)
     }
 
     var showingNotePicker: Bool {
         return note != "" && toEdit == nil && !suggestedTransactions.isEmpty && textFieldFocused
-        && showRecommendations
+            && showRecommendations
     }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -218,7 +220,7 @@ struct TransactionView: View {
     }
 
     @State private var price: Double = 0
-    @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+    @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
     var numberEntryType: Int = 1
     @State var isEditingDecimal = false
     @State var decimalValuesAssigned: AssignedDecimal = .none
@@ -259,7 +261,9 @@ struct TransactionView: View {
                                     .font(.system(.body, design: .rounded).weight(.semibold))
 
                                     .lineLimit(1)
-                                    .foregroundColor(income == false ? Color.PrimaryText : Color.SubtitleText)
+                                    .foregroundColor(
+                                        income == false ? Color.PrimaryText : Color.SubtitleText
+                                    )
                                     .padding(6)
                                     .frame(width: capsuleWidth)
                                     .contentShape(Rectangle())
@@ -276,8 +280,10 @@ struct TransactionView: View {
                                     .font(.system(.body, design: .rounded).weight(.semibold))
 
                                     .lineLimit(1)
-                                //                                    .font(.system(size: 18, weight: .semibold, design: .rounded))
-                                    .foregroundColor(income == true ? Color.PrimaryText : Color.SubtitleText)
+                                    //                                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                                    .foregroundColor(
+                                        income == true ? Color.PrimaryText : Color.SubtitleText
+                                    )
                                     .padding(6)
                                     .frame(width: capsuleWidth)
                                     .contentShape(Rectangle())
@@ -304,7 +310,7 @@ struct TransactionView: View {
                             dismiss()
                         } label: {
                             Image(systemName: "xmark")
-                            //                                .font(.system(size: 16, weight: .semibold))
+                                //                                .font(.system(size: 16, weight: .semibold))
                                 .font(.system(.subheadline, design: .rounded).weight(.semibold))
                                 .dynamicTypeSize(...DynamicTypeSize.xxLarge)
                                 .foregroundColor(Color.SubtitleText)
@@ -322,7 +328,7 @@ struct TransactionView: View {
 
                             } label: {
                                 Image(systemName: "trash.fill")
-                                //                                    .font(.system(size: 16, weight: .semibold))
+                                    //                                    .font(.system(size: 16, weight: .semibold))
                                     .font(.system(.subheadline, design: .rounded).weight(.semibold))
                                     .dynamicTypeSize(...DynamicTypeSize.xxLarge)
                                     .foregroundColor(Color.AlertRed)
@@ -340,10 +346,12 @@ struct TransactionView: View {
                                 Image(systemName: "repeat")
                                     .font(.system(.subheadline, design: .rounded).weight(.semibold))
                                     .dynamicTypeSize(...DynamicTypeSize.xxLarge)
-                                //                                    .font(.system(size: 16, weight: .semibold))
+                                    //                                    .font(.system(size: 16, weight: .semibold))
                                     .overlay(alignment: .topTrailing) {
                                         Text(repeatOverlays[repeatType - 1])
-                                            .font(.system(size: 6, weight: .black, design: .rounded))
+                                            .font(
+                                                .system(size: 6, weight: .black, design: .rounded)
+                                            )
                                             .foregroundColor(Color.IncomeGreen)
                                             .frame(width: 10, alignment: .leading)
                                             .offset(x: 5.7, y: 1.5)
@@ -371,7 +379,8 @@ struct TransactionView: View {
                                     popoverAnchor: .top
                                 )
                                 $0.rubberBandingMode = .none
-                                $0.sourceFrameInset = UIEdgeInsets(top: 0, left: 0, bottom: -10, right: 0)
+                                $0.sourceFrameInset = UIEdgeInsets(
+                                    top: 0, left: 0, bottom: -10, right: 0)
                                 $0.presentation.animation = .easeInOut(duration: 0.2)
                                 $0.dismissal.animation = .easeInOut(duration: 0.3)
                             }
@@ -404,7 +413,9 @@ struct TransactionView: View {
 
                                     if income {
                                         if swipe < 0 {
-                                            swipingOffset = max(-capsuleWidth, -pow(abs(swipe), 0.8)) + capsuleWidth
+                                            swipingOffset =
+                                                max(-capsuleWidth, -pow(abs(swipe), 0.8))
+                                                + capsuleWidth
                                         }
 
                                     } else {
@@ -442,7 +453,9 @@ struct TransactionView: View {
 
                     // number display and note view
                     VStack(spacing: 8) {
-                        NumberPadTextView(price: $price, isEditingDecimal: $isEditingDecimal, decimalValuesAssigned: $decimalValuesAssigned)
+                        NumberPadTextView(
+                            price: $price, isEditingDecimal: $isEditingDecimal,
+                            decimalValuesAssigned: $decimalValuesAssigned)
                         NoteView(note: $note, focused: $textFieldFocused)
                     }
                 }
@@ -471,20 +484,24 @@ struct TransactionView: View {
                                             .padding(.vertical, 3.5)
                                             .padding(.horizontal, 7)
 
-                                        Text("\(currencySymbol)\(Int(round(transaction.wrappedAmount)))")
-                                            .lineLimit(1)
-                                            .foregroundStyle(Color(hex: transaction.wrappedColour))
-                                            .padding(.vertical, 3.5)
-                                            .padding(.horizontal, 5)
-                                            .background(
-                                                Color(hex: transaction.wrappedColour).opacity(0.23),
-                                                in: RoundedRectangle(cornerRadius: 6.5, style: .continuous))
+                                        Text(
+                                            "\(currencySymbol)\(Int(round(transaction.wrappedAmount)))"
+                                        )
+                                        .lineLimit(1)
+                                        .foregroundStyle(Color(hex: transaction.wrappedColour))
+                                        .padding(.vertical, 3.5)
+                                        .padding(.horizontal, 5)
+                                        .background(
+                                            Color(hex: transaction.wrappedColour).opacity(0.23),
+                                            in: RoundedRectangle(
+                                                cornerRadius: 6.5, style: .continuous))
                                     }
                                     .font(.system(.body, design: .rounded).weight(.semibold))
                                     .padding(5)
                                     .background(
                                         Color.SecondaryBackground,
-                                        in: RoundedRectangle(cornerRadius: 11.5, style: .continuous))
+                                        in: RoundedRectangle(cornerRadius: 11.5, style: .continuous)
+                                    )
                                 }
                             }
                         }
@@ -500,7 +517,8 @@ struct TransactionView: View {
                                     if #available(iOS 17.0, *) {
                                         Image(systemName: "rays")
                                             .symbolEffect(
-                                                .variableColor.iterative.dimInactiveLayers.nonReversing,
+                                                .variableColor.iterative.dimInactiveLayers
+                                                    .nonReversing,
                                                 options: .repeating, value: animateIcon)
                                     } else {
                                         Image(systemName: "slowmo")
@@ -544,7 +562,9 @@ struct TransactionView: View {
                             showingDatePicker = true
                         }
 
-                        if (expenseCategories.count == 0 && !income) || (incomeCategories.count == 0 && income) {
+                        if (expenseCategories.count == 0 && !income)
+                            || (incomeCategories.count == 0 && income)
+                        {
                             HStack(spacing: 4) {
                                 Image(systemName: "plus")
                                     .font(.system(.subheadline, design: .rounded).weight(.semibold))
@@ -578,72 +598,93 @@ struct TransactionView: View {
                                     HStack(spacing: 10) {
 
                                         Text("Close")
-                                            .font(.system(.body, design: .rounded).weight(.semibold))
+                                            .font(
+                                                .system(.body, design: .rounded).weight(.semibold)
+                                            )
                                             .lineLimit(1)
 
-//                                        Image(systemName: "xmark.circle.fill")
-//                                            .font(.system(.footnote, design: .rounded).weight(.bold))
+                                        //                                        Image(systemName: "xmark.circle.fill")
+                                        //                                            .font(.system(.footnote, design: .rounded).weight(.bold))
                                     }
                                     .padding(.vertical, 8.5)
                                     .padding(.horizontal, 10)
                                     .frame(width: widthOfCategoryButton)
                                     .foregroundColor(Color.AlertRed)
-                                    .background(Color.AlertRed.opacity(0.23),
+                                    .background(
+                                        Color.AlertRed.opacity(0.23),
                                         in: RoundedRectangle(cornerRadius: 11.5, style: .continuous)
                                     )
                                 } else {
                                     if let unwrappedCategory = category {
                                         HStack(spacing: 5) {
                                             Text(unwrappedCategory.wrappedEmoji)
-                                                .font(.system(.footnote, design: .rounded).weight(.semibold))
+                                                .font(
+                                                    .system(.footnote, design: .rounded).weight(
+                                                        .semibold))
 
                                             Text(unwrappedCategory.wrappedName)
-                                                .font(.system(.body, design: .rounded).weight(.semibold))
+                                                .font(
+                                                    .system(.body, design: .rounded).weight(
+                                                        .semibold)
+                                                )
                                                 .lineLimit(1)
                                         }
                                         .padding(.vertical, 8.5)
                                         .padding(.horizontal, 10)
-                                        .foregroundColor(Color(hex: unwrappedCategory.wrappedColour))
-                                        .background(
-                                            Color(hex: unwrappedCategory.wrappedColour).opacity(0.35),
-                                            in: RoundedRectangle(cornerRadius: 11.5, style: .continuous)
+                                        .foregroundColor(
+                                            Color(hex: unwrappedCategory.wrappedColour)
                                         )
-    //                                    .popover(
-    //                                        present: $showCategoryPicker,
-    //                                        attributes: {
-    //                                            $0.position = .absolute(
-    //                                                originAnchor: .topRight,
-    //                                                popoverAnchor: .bottomRight
-    //                                            )
-    //                                            $0.rubberBandingMode = .none
-    //                                            $0.sourceFrameInset = UIEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
-    //                                            $0.presentation.animation = .easeInOut(duration: 0.2)
-    //                                            $0.dismissal.animation = .easeInOut(duration: 0.3)
-    //                                        }
-    //                                    ) {
-    //                                        CategoryPickerView(
-    //                                            category: $category, showPicker: $showCategoryPicker,
-    //                                            showSheet: $showCategorySheet, income: income, darkMode: darkMode
-    //                                        )
-    //                                        .environment(\.managedObjectContext, self.moc)
-    //                                    } background: {
-    //                                        backgroundColor.opacity(0.6)
-    //                                    }
+                                        .background(
+                                            Color(hex: unwrappedCategory.wrappedColour).opacity(
+                                                0.35),
+                                            in: RoundedRectangle(
+                                                cornerRadius: 11.5, style: .continuous)
+                                        )
+                                        //                                    .popover(
+                                        //                                        present: $showCategoryPicker,
+                                        //                                        attributes: {
+                                        //                                            $0.position = .absolute(
+                                        //                                                originAnchor: .topRight,
+                                        //                                                popoverAnchor: .bottomRight
+                                        //                                            )
+                                        //                                            $0.rubberBandingMode = .none
+                                        //                                            $0.sourceFrameInset = UIEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
+                                        //                                            $0.presentation.animation = .easeInOut(duration: 0.2)
+                                        //                                            $0.dismissal.animation = .easeInOut(duration: 0.3)
+                                        //                                        }
+                                        //                                    ) {
+                                        //                                        CategoryPickerView(
+                                        //                                            category: $category, showPicker: $showCategoryPicker,
+                                        //                                            showSheet: $showCategorySheet, income: income, darkMode: darkMode
+                                        //                                        )
+                                        //                                        .environment(\.managedObjectContext, self.moc)
+                                        //                                    } background: {
+                                        //                                        backgroundColor.opacity(0.6)
+                                        //                                    }
                                     } else {
                                         HStack(spacing: 5.5) {
                                             if #available(iOS 17.0, *) {
                                                 Image(systemName: "circle.grid.2x2")
-                                                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                                                    .font(
+                                                        .system(.subheadline, design: .rounded)
+                                                            .weight(.semibold)
+                                                    )
                                                     .symbolEffect(
-                                                        .bounce.up.byLayer, options: .repeating.speed(0.5),
+                                                        .bounce.up.byLayer,
+                                                        options: .repeating.speed(0.5),
                                                         value: showCategoryPicker)
                                             } else {
                                                 Image(systemName: "circle.grid.2x2")
-                                                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                                                    .font(
+                                                        .system(.subheadline, design: .rounded)
+                                                            .weight(.semibold))
                                             }
 
                                             Text("Category")
-                                                .font(.system(.body, design: .rounded).weight(.semibold))
+                                                .font(
+                                                    .system(.body, design: .rounded).weight(
+                                                        .semibold)
+                                                )
                                                 .lineLimit(1)
                                         }
                                         .padding(.vertical, 8.5)
@@ -652,35 +693,37 @@ struct TransactionView: View {
                                         .foregroundColor(categoryButtonTextColor)
                                         .background(
                                             categoryButtonBackgroundColor,
-                                            in: RoundedRectangle(cornerRadius: 11.5, style: .continuous)
+                                            in: RoundedRectangle(
+                                                cornerRadius: 11.5, style: .continuous)
                                         )
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 11.5, style: .continuous)
-                                                .strokeBorder(categoryButtonOutlineColor, lineWidth: 1.5)
+                                                .strokeBorder(
+                                                    categoryButtonOutlineColor, lineWidth: 1.5)
                                         )
                                         .drawingGroup()
                                         .offset(x: shake ? -5 : 0)
-    //                                    .popover(
-    //                                        present: $showCategoryPicker,
-    //                                        attributes: {
-    //                                            $0.position = .absolute(
-    //                                                originAnchor: .topRight,
-    //                                                popoverAnchor: .bottomRight
-    //                                            )
-    //                                            $0.rubberBandingMode = .none
-    //                                            $0.sourceFrameInset = UIEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
-    //                                            $0.presentation.animation = .easeInOut(duration: 0.2)
-    //                                            $0.dismissal.animation = .easeInOut(duration: 0.3)
-    //                                        }
-    //                                    ) {
-    //                                        CategoryPickerView(
-    //                                            category: $category, showPicker: $showCategoryPicker,
-    //                                            showSheet: $showCategorySheet, income: income, darkMode: darkMode
-    //                                        )
-    //                                        .environment(\.managedObjectContext, self.moc)
-    //                                    } background: {
-    //                                        backgroundColor.opacity(0.6)
-    //                                    }
+                                        //                                    .popover(
+                                        //                                        present: $showCategoryPicker,
+                                        //                                        attributes: {
+                                        //                                            $0.position = .absolute(
+                                        //                                                originAnchor: .topRight,
+                                        //                                                popoverAnchor: .bottomRight
+                                        //                                            )
+                                        //                                            $0.rubberBandingMode = .none
+                                        //                                            $0.sourceFrameInset = UIEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
+                                        //                                            $0.presentation.animation = .easeInOut(duration: 0.2)
+                                        //                                            $0.dismissal.animation = .easeInOut(duration: 0.3)
+                                        //                                        }
+                                        //                                    ) {
+                                        //                                        CategoryPickerView(
+                                        //                                            category: $category, showPicker: $showCategoryPicker,
+                                        //                                            showSheet: $showCategorySheet, income: income, darkMode: darkMode
+                                        //                                        )
+                                        //                                        .environment(\.managedObjectContext, self.moc)
+                                        //                                    } background: {
+                                        //                                        backgroundColor.opacity(0.6)
+                                        //                                    }
                                     }
                                 }
 
@@ -764,7 +807,8 @@ struct TransactionView: View {
                                 .frame(height: 45)
                                 .frame(maxWidth: .infinity)
                                 .background(
-                                    Color.AlertRed, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                                    Color.AlertRed,
+                                    in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                         }
                         .padding(.bottom, 8)
 
@@ -788,11 +832,13 @@ struct TransactionView: View {
                     .padding(13)
                     .background(
                         RoundedRectangle(cornerRadius: 13).fill(Color.PrimaryBackground).shadow(
-                            color: systemColorScheme == .dark ? Color.clear : Color.gray.opacity(0.25), radius: 6)
+                            color: systemColorScheme == .dark
+                                ? Color.clear : Color.gray.opacity(0.25), radius: 6)
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 13).stroke(
-                            systemColorScheme == .dark ? Color.gray.opacity(0.1) : Color.clear, lineWidth: 1.3)
+                            systemColorScheme == .dark ? Color.gray.opacity(0.1) : Color.clear,
+                            lineWidth: 1.3)
                     )
                     .offset(y: offset)
                     .gesture(
@@ -895,7 +941,9 @@ struct TransactionView: View {
                     repeatCoefficient = Int(transaction.recurringCoefficient)
                     price = transaction.wrappedAmount
 
-                    if transaction.wrappedAmount.truncatingRemainder(dividingBy: 1) > 0 && numberEntryType == 2 {
+                    if transaction.wrappedAmount.truncatingRemainder(dividingBy: 1) > 0
+                        && numberEntryType == 2
+                    {
                         isEditingDecimal = true
                         decimalValuesAssigned = .second
                     }
@@ -912,12 +960,14 @@ struct TransactionView: View {
         .sheet(isPresented: $showPicker) {
             if #available(iOS 16.0, *) {
                 CustomRecurringView(
-                    repeatType: $repeatType, repeatCoefficient: $repeatCoefficient, showPicker: $showPicker
+                    repeatType: $repeatType, repeatCoefficient: $repeatCoefficient,
+                    showPicker: $showPicker
                 )
                 .presentationDetents([.height(230)])
             } else {
                 CustomRecurringView(
-                    repeatType: $repeatType, repeatCoefficient: $repeatCoefficient, showPicker: $showPicker)
+                    repeatType: $repeatType, repeatCoefficient: $repeatCoefficient,
+                    showPicker: $showPicker)
             }
         }
         .onChange(of: dynamicTypeSize) { _ in
@@ -957,7 +1007,8 @@ struct TransactionView: View {
 
     func toggleFieldColors() {
         if categoryButtonTextColor == Color.AlertRed
-            || categoryButtonBackgroundColor == Color.AlertRed.opacity(0.23) {
+            || categoryButtonBackgroundColor == Color.AlertRed.opacity(0.23)
+        {
             withAnimation(.linear) {
                 categoryButtonTextColor = Color.SubtitleText
                 categoryButtonBackgroundColor = Color.clear
@@ -1037,7 +1088,7 @@ struct TransactionView: View {
                     let calendar = Calendar(identifier: .gregorian)
 
                     editedTransaction.day =
-                    calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date) ?? Date.now
+                        calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date) ?? Date.now
 
                     let dateComponents = calendar.dateComponents([.month, .year], from: date)
 
@@ -1084,7 +1135,8 @@ struct TransactionView: View {
 
         let calendar = Calendar(identifier: .gregorian)
 
-        transaction.day = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date) ?? Date.now
+        transaction.day =
+            calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date) ?? Date.now
 
         let dateComponents = calendar.dateComponents([.month, .year], from: date)
 
@@ -1155,7 +1207,7 @@ struct FilteredSearchNewTransactionView: View {
         let containPredicate = NSPredicate(
             format: "%K CONTAINS[cd] %@", #keyPath(Transaction.note), searchQuery)
         let compound = NSCompoundPredicate(orPredicateWithSubpredicates: [
-            beginPredicate, containPredicate
+            beginPredicate, containPredicate,
         ])
 
         if let unwrappedCategory = category {
@@ -1272,7 +1324,8 @@ struct CategoryPickerView: View {
                 }
 
             VStack(
-                alignment: .trailing, spacing: (categories.count == 1 && initialCategory != nil) ? 0 : 8
+                alignment: .trailing,
+                spacing: (categories.count == 1 && initialCategory != nil) ? 0 : 8
             ) {
                 HStack(spacing: 4) {
                     Image(systemName: "pencil")
@@ -1283,12 +1336,15 @@ struct CategoryPickerView: View {
                 }
                 .padding(.horizontal, 11)
                 .padding(.vertical, 7)
-                .foregroundColor(darkMode ? Color("AlwaysLightBackground") : Color("AlwaysDarkBackground"))
+                .foregroundColor(
+                    darkMode ? Color("AlwaysLightBackground") : Color("AlwaysDarkBackground")
+                )
                 .background(
                     RoundedRectangle(cornerRadius: 11.5, style: .continuous)
                         .fill(
                             darkMode
-                            ? Color("AlwaysDarkSecondaryBackground") : Color("AlwaysLightSecondaryBackground"))
+                                ? Color("AlwaysDarkSecondaryBackground")
+                                : Color("AlwaysLightSecondaryBackground"))
                 )
                 .contentShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
                 .onTapGesture {
@@ -1309,26 +1365,33 @@ struct CategoryPickerView: View {
                                             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                                         //                                                    .font(.system(size: 14))
                                         Text(item.wrappedName)
-                                            .font(.system(.body, design: .rounded).weight(.semibold))
+                                            .font(
+                                                .system(.body, design: .rounded).weight(.semibold)
+                                            )
                                             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-                                        //                                                    .font(.system(size: 17.5, weight: .semibold, design: .rounded))
+                                            //                                                    .font(.system(size: 17.5, weight: .semibold, design: .rounded))
                                             .lineLimit(1)
                                     }
                                     .id(item.id)
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 7)
                                     .foregroundColor(
-                                        darkMode ? Color("AlwaysLightBackground") : Color("AlwaysDarkBackground")
+                                        darkMode
+                                            ? Color("AlwaysLightBackground")
+                                            : Color("AlwaysDarkBackground")
                                     )
                                     .background(
-                                        item == category ? secondaryBackgroundColor : backgroundColor,
+                                        item == category
+                                            ? secondaryBackgroundColor : backgroundColor,
                                         in: RoundedRectangle(cornerRadius: 11.5, style: .continuous)
                                     )
                                     .contentShape(Rectangle())
                                     .overlay {
                                         RoundedRectangle(cornerRadius: 11.5, style: .continuous)
                                             .strokeBorder(
-                                                darkMode ? Color("AlwaysDarkOutline") : Color("AlwaysLightOutline"),
+                                                darkMode
+                                                    ? Color("AlwaysDarkOutline")
+                                                    : Color("AlwaysLightOutline"),
                                                 style: StrokeStyle(lineWidth: 1.5))
                                     }
                                     .onTapGesture {
@@ -1419,7 +1482,7 @@ struct NoteView: View {
             Image(systemName: "text.alignleft")
                 .font(.system(.subheadline, design: .rounded).weight(.semibold))
                 .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-            //                .font(.system(size: 14, weight: .semibold))
+                //                .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(Color.SubtitleText)
 
             ZStack(alignment: .leading) {
@@ -1470,7 +1533,7 @@ struct RecurringPickerView: View {
     let stringArray = ["none", "daily", "weekly", "monthly"]
     let stringArray2 = ["", "days", "weeks", "months"]
 
-    @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+    @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
     var bottomEdge: Double = 15
 
     @State private var offset: CGFloat = 0
@@ -1478,7 +1541,7 @@ struct RecurringPickerView: View {
     @State var holdingType = 0
     @State var holdingCoefficient = 0
 
-    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
     var colourScheme: Int = 0
 
     @Environment(\.colorScheme) var systemColorScheme
@@ -1497,7 +1560,9 @@ struct RecurringPickerView: View {
                         .lineLimit(1)
                     Spacer()
 
-                    if repeatType == (stringArray.firstIndex(of: string) ?? 0) && repeatCoefficient == 1 {
+                    if repeatType == (stringArray.firstIndex(of: string) ?? 0)
+                        && repeatCoefficient == 1
+                    {
                         Image(systemName: "checkmark")
                             .font(.system(.footnote, design: .rounded).weight(.medium))
                             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
@@ -1508,18 +1573,23 @@ struct RecurringPickerView: View {
                 //                .font(.system(size: 18, weight: .medium, design: .rounded))
                 .padding(5)
                 .background {
-                    if repeatType == (stringArray.firstIndex(of: string) ?? 0) && repeatCoefficient == 1 {
+                    if repeatType == (stringArray.firstIndex(of: string) ?? 0)
+                        && repeatCoefficient == 1
+                    {
                         RoundedRectangle(cornerRadius: 6)
                             .fill(
                                 darkMode
-                                ? Color("AlwaysDarkSecondaryBackground") : Color("AlwaysLightSecondaryBackground")
+                                    ? Color("AlwaysDarkSecondaryBackground")
+                                    : Color("AlwaysLightSecondaryBackground")
                             )
                             .matchedGeometryEffect(id: "TAB", in: animation)
                     }
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    if repeatType == (stringArray.firstIndex(of: string) ?? 0) && repeatCoefficient == 1 {
+                    if repeatType == (stringArray.firstIndex(of: string) ?? 0)
+                        && repeatCoefficient == 1
+                    {
                         showMenu = false
                     } else {
                         withAnimation(.easeIn(duration: 0.15)) {
@@ -1539,11 +1609,17 @@ struct RecurringPickerView: View {
                     Text("custom")
                 } else {
                     if repeatType == 1 {
-                        Text(String(repeatCoefficient) + " " + String(localized: "\(repeatCoefficient) days"))
+                        Text(
+                            String(repeatCoefficient) + " "
+                                + String(localized: "\(repeatCoefficient) days"))
                     } else if repeatType == 2 {
-                        Text(String(repeatCoefficient) + " " + String(localized: "\(repeatCoefficient) weeks"))
+                        Text(
+                            String(repeatCoefficient) + " "
+                                + String(localized: "\(repeatCoefficient) weeks"))
                     } else if repeatType == 3 {
-                        Text(String(repeatCoefficient) + " " + String(localized: "\(repeatCoefficient) months"))
+                        Text(
+                            String(repeatCoefficient) + " "
+                                + String(localized: "\(repeatCoefficient) months"))
                     }
                 }
 
@@ -1567,7 +1643,8 @@ struct RecurringPickerView: View {
                     RoundedRectangle(cornerRadius: 6)
                         .fill(
                             darkMode
-                            ? Color("AlwaysDarkSecondaryBackground") : Color("AlwaysLightSecondaryBackground")
+                                ? Color("AlwaysDarkSecondaryBackground")
+                                : Color("AlwaysLightSecondaryBackground")
                         )
                         .matchedGeometryEffect(id: "TAB", in: animation)
                 }
@@ -1618,7 +1695,7 @@ struct CustomRecurringView: View {
     var stringArray: [String] {
         return [
             "", "\(holdingCoefficient) days", "\(holdingCoefficient) weeks",
-            "\(holdingCoefficient) months"
+            "\(holdingCoefficient) months",
         ]
     }
 
@@ -1636,7 +1713,7 @@ struct CustomRecurringView: View {
                     Image(systemName: "xmark")
                         .font(.system(.subheadline, design: .rounded).weight(.semibold))
                         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-                    //                        .font(.system(size: 16, weight: .semibold))
+                        //                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(Color.SubtitleText)
                         .padding(7)
                         .background(Color.SecondaryBackground, in: Circle())
@@ -1664,7 +1741,7 @@ struct CustomRecurringView: View {
                     Image(systemName: "checkmark")
                         .font(.system(.subheadline, design: .rounded).weight(.semibold))
                         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-                    //                        .font(.system(size: 16, weight: .semibold))
+                        //                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(Color.IncomeGreen)
                         .padding(7)
                         .background(Color.IncomeGreen.opacity(0.23), in: Circle())
@@ -1687,7 +1764,8 @@ struct CustomRecurringView: View {
                             .foregroundColor(Color.SubtitleText)
                             .padding(7)
                             .background(
-                                Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                Color.SecondaryBackground,
+                                in: RoundedRectangle(cornerRadius: 6, style: .continuous)
                             )
                             .contentShape(Circle())
                             .opacity(holdingCoefficient == 30 ? 0.25 : 1)
@@ -1711,7 +1789,8 @@ struct CustomRecurringView: View {
                             .foregroundColor(Color.SubtitleText)
                             .padding(7)
                             .background(
-                                Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                Color.SecondaryBackground,
+                                in: RoundedRectangle(cornerRadius: 6, style: .continuous)
                             )
                             .contentShape(Circle())
                             .opacity(holdingCoefficient == 2 ? 0.25 : 1)
@@ -1728,7 +1807,8 @@ struct CustomRecurringView: View {
                             .foregroundColor(Color.SubtitleText)
                             .padding(7)
                             .background(
-                                Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                Color.SecondaryBackground,
+                                in: RoundedRectangle(cornerRadius: 6, style: .continuous)
                             )
                             .contentShape(Circle())
                             .opacity(holdingType == 1 ? 0.25 : 1)
@@ -1760,7 +1840,8 @@ struct CustomRecurringView: View {
                             .foregroundColor(Color.SubtitleText)
                             .padding(7)
                             .background(
-                                Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                Color.SecondaryBackground,
+                                in: RoundedRectangle(cornerRadius: 6, style: .continuous)
                             )
                             .contentShape(Circle())
                             .opacity(holdingType == 3 ? 0.25 : 1)

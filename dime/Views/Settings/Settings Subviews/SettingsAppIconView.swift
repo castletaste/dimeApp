@@ -16,7 +16,7 @@ struct AppIconBundle: Hashable {
 }
 
 struct SettingsAppIconView: View {
-  @AppStorage("activeIcon", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("activeIcon", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var activeIcon: String = "AppIcon"
   @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
@@ -32,7 +32,7 @@ struct SettingsAppIconView: View {
       displaySubtitle: "An early prototype also designed by @rudra_dsigns that I kinda fancy."),
     AppIconBundle(
       actualFileName: "AppIcon4", exampleFileName: "AppIcon4_EG", displayName: "O.G.",
-      displaySubtitle: "Haphazardly put together in under 30 minutes, the original Dime icon.")
+      displaySubtitle: "Haphazardly put together in under 30 minutes, the original Dime icon."),
   ]
 
   @State private var position: Int?

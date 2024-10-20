@@ -24,8 +24,11 @@ struct CustomTabBar: View {
 
     var launchAdd: Bool
 
-    @AppStorage("confetti", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var confetti: Bool = false
-    @AppStorage("firstTransactionViewLaunch", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var firstLaunch: Bool = true
+    @AppStorage("confetti", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var confetti:
+        Bool = false
+    @AppStorage(
+        "firstTransactionViewLaunch", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var firstLaunch: Bool = true
 
     @State var animate = false
 
@@ -40,15 +43,19 @@ struct CustomTabBar: View {
             TabButton(image: "Insights", zoomed: isZoomed, currentTab: $currentTab)
 
             ZStack {
-                RoundedRectangle(cornerRadius: 28, style: .continuous).fill(Color.DarkBackground.opacity(0.6))
-                    .frame(width: 95, height: 68)
-                    .opacity(self.animate ? 0 : 1)
-                    .scaleEffect(self.animate ? 1 : 0.4)
+                RoundedRectangle(cornerRadius: 28, style: .continuous).fill(
+                    Color.DarkBackground.opacity(0.6)
+                )
+                .frame(width: 95, height: 68)
+                .opacity(self.animate ? 0 : 1)
+                .scaleEffect(self.animate ? 1 : 0.4)
 
-                RoundedRectangle(cornerRadius: 20.5, style: .continuous).fill(Color.DarkBackground.opacity(0.8))
-                    .frame(width: 80, height: 53)
-                    .opacity(self.animate ? 0 : 1)
-                    .scaleEffect(self.animate ? 1 : 0.6)
+                RoundedRectangle(cornerRadius: 20.5, style: .continuous).fill(
+                    Color.DarkBackground.opacity(0.8)
+                )
+                .frame(width: 80, height: 53)
+                .opacity(self.animate ? 0 : 1)
+                .scaleEffect(self.animate ? 1 : 0.6)
 
                 Button {
                     let impactMed = UIImpactFeedbackGenerator(style: .light)
@@ -79,20 +86,24 @@ struct CustomTabBar: View {
         .padding(.bottom, bottomEdge - 10)
         .frame(maxWidth: .infinity)
         .background(Color.PrimaryBackground)
-        .fullScreenCover(isPresented: $addTransaction, onDismiss: {
-            if confetti {
-                if count != transactions.count {
-                    counter += 1
+        .fullScreenCover(
+            isPresented: $addTransaction,
+            onDismiss: {
+                if confetti {
+                    if count != transactions.count {
+                        counter += 1
+                    }
                 }
-            }
 
-            if firstLaunch {
-                firstLaunch = false
-            }
+                if firstLaunch {
+                    firstLaunch = false
+                }
 
-        }, content: {
-            TransactionView(toEdit: nil)
-        })
+            },
+            content: {
+                TransactionView(toEdit: nil)
+            }
+        )
         .onChange(of: launchAdd) { _ in
             addTransaction = true
         }
@@ -127,7 +138,9 @@ struct MyButtonStyle: ButtonStyle {
             .font(.system(size: 20, weight: .bold))
             .foregroundColor(Color.LightIcon)
             .frame(width: 65, height: 38)
-            .background(configuration.isPressed ? Color.SubtitleText : Color.DarkBackground, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+            .background(
+                configuration.isPressed ? Color.SubtitleText : Color.DarkBackground,
+                in: RoundedRectangle(cornerRadius: 13, style: .continuous))
     }
 }
 
@@ -138,7 +151,7 @@ struct BouncyButton: ButtonStyle {
     public func makeBody(configuration: Self.Configuration) -> some View {
         return configuration.label
             .scaleEffect(configuration.isPressed ? scale : 1)
-//            .scaleEffect(configuration.isPressed ? 1.3 : 1)
+            //            .scaleEffect(configuration.isPressed ? 1.3 : 1)
             .animation(.easeOut(duration: duration), value: configuration.isPressed)
     }
 }

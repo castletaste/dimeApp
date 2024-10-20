@@ -16,10 +16,14 @@ struct BudgetIntent: AppIntent {
     static var description =
         IntentDescription("Extract leftover amount for a particular budget")
 
-    @Parameter(title: "Budget Type", requestValueDialog: IntentDialog("What budget type would you like to extract insights from?"))
+    @Parameter(
+        title: "Budget Type",
+        requestValueDialog: IntentDialog(
+            "What budget type would you like to extract insights from?"))
     var type: ShortcutsBudgetsType
 
-    @Parameter(title: "Category Budget", requestValueDialog: IntentDialog("Select a categorical budget."))
+    @Parameter(
+        title: "Category Budget", requestValueDialog: IntentDialog("Select a categorical budget."))
     var budget: BudgetEntity?
 
     @MainActor
@@ -28,7 +32,7 @@ struct BudgetIntent: AppIntent {
             throw $budget.needsValueError()
         }
 
-//        let dataController = DataController()
+        //        let dataController = DataController()
 
         let dataController = DataController.shared
 
@@ -37,7 +41,9 @@ struct BudgetIntent: AppIntent {
 
         switch type {
         case .overall:
-            if let mainBudget = dataController.results(for: dataController.fetchRequestForMainBudget()).first {
+            if let mainBudget = dataController.results(
+                for: dataController.fetchRequestForMainBudget()
+            ).first {
                 amount = dataController.getBudgetLeftover(overallBudget: mainBudget)
 
                 budgetType = mainBudget.type
@@ -84,7 +90,7 @@ extension ShortcutsBudgetsType: AppEnum {
 
     static var caseDisplayRepresentations: [ShortcutsBudgetsType: DisplayRepresentation] = [
         .overall: DisplayRepresentation(title: "overall budget"),
-        .category: DisplayRepresentation(title: "categorical budget")
+        .category: DisplayRepresentation(title: "categorical budget"),
     ]
 }
 
@@ -92,9 +98,11 @@ struct ShortcutBudgetView: View {
     let amount: Double
     let type: Int
 
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
 
     var budgetType: String {
         switch type {

@@ -16,22 +16,32 @@ struct GetInsightsIntent: AppIntent {
     static var description =
         IntentDescription("Extracts your total expenditure or income for a particular time period")
 
-    @Parameter(title: "Type", description: "Type of Data", requestValueDialog: IntentDialog("Which of the following would you like to extract?"))
+    @Parameter(
+        title: "Type", description: "Type of Data",
+        requestValueDialog: IntentDialog("Which of the following would you like to extract?"))
     var type: ShortcutsInsightsType
 
-    @Parameter(title: "Time Frame", description: "Time Frame of Data", requestValueDialog: IntentDialog("Over what time frame would you like to consider?"))
+    @Parameter(
+        title: "Time Frame", description: "Time Frame of Data",
+        requestValueDialog: IntentDialog("Over what time frame would you like to consider?"))
     var timeframe: ShortcutsInsightsTimeFrame
 
-    @Parameter(title: "Category Filters", description: "Additional Category Filters", requestValueDialog: IntentDialog("Which additional category filters do you want to impose?"))
+    @Parameter(
+        title: "Category Filters", description: "Additional Category Filters",
+        requestValueDialog: IntentDialog("Which additional category filters do you want to impose?")
+    )
     var incomeCategories: [IncomeCategoryEntity]?
 
-    @Parameter(title: "Category Filters", description: "Additional Category Filters", requestValueDialog: IntentDialog("Which additional category filters do you want to impose?"))
+    @Parameter(
+        title: "Category Filters", description: "Additional Category Filters",
+        requestValueDialog: IntentDialog("Which additional category filters do you want to impose?")
+    )
     var expenseCategories: [ExpenseCategoryEntity]?
 
     @MainActor
     func perform() async throws -> some ReturnsValue<Double> & ShowsSnippetView & ProvidesDialog {
         let dataController = DataController.shared
-//        let dataController = DataController()
+        //        let dataController = DataController()
 
         let categories: [Category]
         let optionalIncome: Bool?
@@ -65,7 +75,9 @@ struct GetInsightsIntent: AppIntent {
             typeInt = 3
         }
 
-        let result = dataController.getShortcutInsights(type: typeInt, timeframe: timeframe.rawValue, optionalIncome: optionalIncome, categories: categories)
+        let result = dataController.getShortcutInsights(
+            type: typeInt, timeframe: timeframe.rawValue, optionalIncome: optionalIncome,
+            categories: categories)
 
         return .result(value: result, dialog: "Here you go!") {
             ShortcutInsightsView(amount: result, type: type, timeframe: timeframe)
@@ -113,7 +125,7 @@ extension ShortcutsInsightsTimeFrame: AppEnum {
         .week: DisplayRepresentation(title: "this week"),
         .month: DisplayRepresentation(title: "this month"),
         .year: DisplayRepresentation(title: "this year"),
-        .all: DisplayRepresentation(title: "all time")
+        .all: DisplayRepresentation(title: "all time"),
     ]
 }
 
@@ -130,7 +142,7 @@ extension ShortcutsInsightsType: AppEnum {
     static var caseDisplayRepresentations: [ShortcutsInsightsType: DisplayRepresentation] = [
         .net: DisplayRepresentation(title: "net total"),
         .income: DisplayRepresentation(title: "total income"),
-        .spent: DisplayRepresentation(title: "total expenditure")
+        .spent: DisplayRepresentation(title: "total expenditure"),
     ]
 }
 
@@ -139,9 +151,11 @@ struct ShortcutInsightsView: View {
     let type: ShortcutsInsightsType
     let timeframe: ShortcutsInsightsTimeFrame
 
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
 
     var leftText: String {
         switch type {

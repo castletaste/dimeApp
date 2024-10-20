@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct SettingsHapticsView: View {
-    @AppStorage("haptics", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+    @AppStorage("haptics", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
     var hapticType: Int = 1
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
@@ -61,9 +61,9 @@ struct SettingsHapticsView: View {
                             hapticType = option
                         }
 
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-//                            self.presentationMode.wrappedValue.dismiss()
-//                        }
+                        //                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        //                            self.presentationMode.wrappedValue.dismiss()
+                        //                        }
                     }
                     .padding(.vertical, 9)
                     .overlay(alignment: .bottom) {

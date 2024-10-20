@@ -13,7 +13,9 @@ struct InsightsWidget: Widget {
     let kind: String = "InsightsWidget"
 
     var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: InsightsWidgetConfigurationIntent.self, provider: InsightsProvider()) { entry in
+        IntentConfiguration(
+            kind: kind, intent: InsightsWidgetConfigurationIntent.self, provider: InsightsProvider()
+        ) { entry in
             InsightsWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Insights")
@@ -30,28 +32,49 @@ struct InsightsProvider: IntentTimelineProvider {
     func placeholder(in _: Context) -> InsightsWidgetEntry {
         let results = loadData(type: .week, income: true)
 
-        return InsightsWidgetEntry(date: Date(), amount: results.amount, duration: .week, maximum: results.maximum, dates: results.dates, dictionary: results.dateDictionary, numberOfDays: results.numberOfDays, average: results.average, categories: results.categories, income: true)
+        return InsightsWidgetEntry(
+            date: Date(), amount: results.amount, duration: .week, maximum: results.maximum,
+            dates: results.dates, dictionary: results.dateDictionary,
+            numberOfDays: results.numberOfDays, average: results.average,
+            categories: results.categories, income: true)
     }
 
-    func getSnapshot(for configuration: InsightsWidgetConfigurationIntent, in _: Context, completion: @escaping (InsightsWidgetEntry) -> Void) {
+    func getSnapshot(
+        for configuration: InsightsWidgetConfigurationIntent, in _: Context,
+        completion: @escaping (InsightsWidgetEntry) -> Void
+    ) {
         let loaded = loadData(type: configuration.duration, income: configuration.income == .income)
 
-        let entry = InsightsWidgetEntry(date: Date(), amount: loaded.amount, duration: configuration.duration, maximum: loaded.maximum, dates: loaded.dates, dictionary: loaded.dateDictionary, numberOfDays: loaded.numberOfDays, average: loaded.average, categories: loaded.categories, income: configuration.income == .income)
+        let entry = InsightsWidgetEntry(
+            date: Date(), amount: loaded.amount, duration: configuration.duration,
+            maximum: loaded.maximum, dates: loaded.dates, dictionary: loaded.dateDictionary,
+            numberOfDays: loaded.numberOfDays, average: loaded.average,
+            categories: loaded.categories, income: configuration.income == .income)
         completion(entry)
     }
 
-    func getTimeline(for configuration: InsightsWidgetConfigurationIntent, in _: Context, completion: @escaping (Timeline<Entry>) -> Void) {
+    func getTimeline(
+        for configuration: InsightsWidgetConfigurationIntent, in _: Context,
+        completion: @escaping (Timeline<Entry>) -> Void
+    ) {
         let loaded = loadData(type: configuration.duration, income: configuration.income == .income)
 
-        let entry = InsightsWidgetEntry(date: Date(), amount: loaded.amount, duration: configuration.duration, maximum: loaded.maximum, dates: loaded.dates, dictionary: loaded.dateDictionary, numberOfDays: loaded.numberOfDays, average: loaded.average, categories: loaded.categories, income: configuration.income == .income)
+        let entry = InsightsWidgetEntry(
+            date: Date(), amount: loaded.amount, duration: configuration.duration,
+            maximum: loaded.maximum, dates: loaded.dates, dictionary: loaded.dateDictionary,
+            numberOfDays: loaded.numberOfDays, average: loaded.average,
+            categories: loaded.categories, income: configuration.income == .income)
 
         let timeline = Timeline(entries: [entry], policy: .atEnd)
 
         completion(timeline)
     }
 
-    func loadData(type: InsightsTimePeriod, income: Bool) -> (amount: Double, maximum: Double, average: Double, numberOfDays: Int, dates: [Date], dateDictionary: [Date: Double], categories: [HoldingCategory]) {
-//        let dataController = DataController()
+    func loadData(type: InsightsTimePeriod, income: Bool) -> (
+        amount: Double, maximum: Double, average: Double, numberOfDays: Int, dates: [Date],
+        dateDictionary: [Date: Double], categories: [HoldingCategory]
+    ) {
+        //        let dataController = DataController()
         let dataController = DataController.shared
         let itemRequest = dataController.fetchRequestForWidgetInsights(type: type, income: income)
         let categoryRequest = dataController.fetchRequestForCategories(income: income)
@@ -70,7 +93,8 @@ struct InsightsProvider: IntentTimelineProvider {
             // calendar initialization
             var calendar = Calendar(identifier: .gregorian)
 
-            calendar.firstWeekday = UserDefaults(suiteName: "group.com.rafaelsoh.dime")!.integer(forKey: "firstWeekday")
+            calendar.firstWeekday = UserDefaults(suiteName: "group.wtf.savva.dime")!.integer(
+                forKey: "firstWeekday")
             calendar.minimumDaysInFirstWeek = 4
 
             var dictionary = [Date: Double]()
@@ -78,7 +102,7 @@ struct InsightsProvider: IntentTimelineProvider {
             var maximum = 0.0
             var numberOfDays = 0
 
-            for _ in 1 ... 7 {
+            for _ in 1...7 {
                 nextDate = calendar.date(byAdding: .day, value: 1, to: iterativeDate)!
 
                 let holding = transactions.filter {
@@ -107,7 +131,8 @@ struct InsightsProvider: IntentTimelineProvider {
                 iterativeDate = nextDate
             }
 
-            let numberOfDaysPast = Calendar.current.dateComponents([.day], from: itemRequest.date, to: Date.now)
+            let numberOfDaysPast = Calendar.current.dateComponents(
+                [.day], from: itemRequest.date, to: Date.now)
 
             var holdingCat = [HoldingCategory]()
 
@@ -126,7 +151,9 @@ struct InsightsProvider: IntentTimelineProvider {
                     continue
                 }
 
-                let newCategory = HoldingCategory(colour: category.wrappedColour, name: category.wrappedName, percent: total / totalForWeek)
+                let newCategory = HoldingCategory(
+                    colour: category.wrappedColour, name: category.wrappedName,
+                    percent: total / totalForWeek)
 
                 holdingCat.append(newCategory)
             }
@@ -135,7 +162,10 @@ struct InsightsProvider: IntentTimelineProvider {
                 lhs.percent > rhs.percent
             })
 
-            return (totalForWeek, maximum, totalForWeek / Double((numberOfDaysPast.day! + 1)), numberOfDays, dates, dictionary, holdingCat)
+            return (
+                totalForWeek, maximum, totalForWeek / Double((numberOfDaysPast.day! + 1)),
+                numberOfDays, dates, dictionary, holdingCat
+            )
         case .month:
             var dates = [Date]()
             var nextDate = iterativeDate
@@ -148,7 +178,7 @@ struct InsightsProvider: IntentTimelineProvider {
             var maximum = 0.0
             var numberOfDays = 0
 
-            for _ in 1 ... range.count {
+            for _ in 1...range.count {
                 nextDate = calendar.date(byAdding: .day, value: 1, to: iterativeDate)!
 
                 let holding = transactions.filter {
@@ -177,7 +207,8 @@ struct InsightsProvider: IntentTimelineProvider {
                 iterativeDate = nextDate
             }
 
-            let numDays = Calendar.current.dateComponents([.day], from: itemRequest.date, to: Date.now)
+            let numDays = Calendar.current.dateComponents(
+                [.day], from: itemRequest.date, to: Date.now)
 
             var holdingCat = [HoldingCategory]()
 
@@ -196,7 +227,9 @@ struct InsightsProvider: IntentTimelineProvider {
                     continue
                 }
 
-                let newCategory = HoldingCategory(colour: category.wrappedColour, name: category.wrappedName, percent: total / totalForMonth)
+                let newCategory = HoldingCategory(
+                    colour: category.wrappedColour, name: category.wrappedName,
+                    percent: total / totalForMonth)
 
                 holdingCat.append(newCategory)
             }
@@ -205,7 +238,10 @@ struct InsightsProvider: IntentTimelineProvider {
                 lhs.percent > rhs.percent
             })
 
-            return (totalForMonth, maximum, totalForMonth / Double((numDays.day! + 1)), numberOfDays, dates, dictionary, holdingCat)
+            return (
+                totalForMonth, maximum, totalForMonth / Double((numDays.day! + 1)), numberOfDays,
+                dates, dictionary, holdingCat
+            )
         case .year:
             // trackin dates
             var dates = [Date]()
@@ -218,7 +254,7 @@ struct InsightsProvider: IntentTimelineProvider {
             var maximum = 0.0
             var numberOfDays = 0
 
-            for _ in 1 ... 12 {
+            for _ in 1...12 {
                 nextDate = calendar.date(byAdding: .month, value: 1, to: iterativeDate)!
 
                 let holding = transactions.filter {
@@ -247,7 +283,8 @@ struct InsightsProvider: IntentTimelineProvider {
                 iterativeDate = nextDate
             }
 
-            let numDays = Calendar.current.dateComponents([.month], from: itemRequest.date, to: Date.now)
+            let numDays = Calendar.current.dateComponents(
+                [.month], from: itemRequest.date, to: Date.now)
 
             var holdingCat = [HoldingCategory]()
 
@@ -266,7 +303,9 @@ struct InsightsProvider: IntentTimelineProvider {
                     continue
                 }
 
-                let newCategory = HoldingCategory(colour: category.wrappedColour, name: category.wrappedName, percent: total / totalForYear)
+                let newCategory = HoldingCategory(
+                    colour: category.wrappedColour, name: category.wrappedName,
+                    percent: total / totalForYear)
 
                 holdingCat.append(newCategory)
             }
@@ -275,7 +314,10 @@ struct InsightsProvider: IntentTimelineProvider {
                 lhs.percent > rhs.percent
             })
 
-            return (totalForYear, maximum, totalForYear / Double((numDays.month! + 1)), numberOfDays, dates, dictionary, holdingCat)
+            return (
+                totalForYear, maximum, totalForYear / Double((numDays.month! + 1)), numberOfDays,
+                dates, dictionary, holdingCat
+            )
         }
     }
 }
@@ -300,13 +342,16 @@ struct InsightsWidgetEntryView: View {
     let monthNumberArray = [1, 4, 7, 10]
     let monthNames: [Int: String] = [1: "Jan", 4: "Apr", 7: "Jul", 10: "Oct"]
 
-    @AppStorage("firstDayOfMonth", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var firstDayOfMonth: Int = 1
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("firstDayOfMonth", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var firstDayOfMonth: Int = 1
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
 
-    @AppStorage("showCents", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showCents: Bool = true
+    @AppStorage("showCents", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var showCents:
+        Bool = true
 
     var dollarText: String {
         if entry.amount < 10000 && showCents {
@@ -362,7 +407,8 @@ struct InsightsWidgetEntryView: View {
                                 .font(.system(size: 10, weight: .semibold, design: .rounded))
                                 .foregroundColor(Color.SubtitleText)
 
-                            InsightsWidgetDollarView(currencySymbol: currencySymbol, dollarText: dollarText)
+                            InsightsWidgetDollarView(
+                                currencySymbol: currencySymbol, dollarText: dollarText)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -373,13 +419,17 @@ struct InsightsWidgetEntryView: View {
                                     VStack(alignment: .leading) {
                                         Text(getMaxText())
                                             .lineLimit(1)
-                                            .font(.system(size: 8, weight: .regular, design: .rounded))
+                                            .font(
+                                                .system(size: 8, weight: .regular, design: .rounded)
+                                            )
                                             .foregroundColor(Color.SubtitleText)
 
                                         Spacer()
 
                                         Text("0")
-                                            .font(.system(size: 8, weight: .regular, design: .rounded))
+                                            .font(
+                                                .system(size: 8, weight: .regular, design: .rounded)
+                                            )
                                             .foregroundColor(Color.SubtitleText)
                                     }
                                     .frame(height: proxy.size.height * 0.85)
@@ -389,16 +439,27 @@ struct InsightsWidgetEntryView: View {
                                             ForEach(entry.dates, id: \.self) { day in
                                                 VStack(spacing: 3) {
                                                     ZStack(alignment: .bottom) {
-                                                        RoundedRectangle(cornerRadius: 3.5, style: .continuous)
-                                                            .fill(Color.SecondaryBackground)
-                                                            .frame(height: proxy.size.height * 0.85)
+                                                        RoundedRectangle(
+                                                            cornerRadius: 3.5, style: .continuous
+                                                        )
+                                                        .fill(Color.SecondaryBackground)
+                                                        .frame(height: proxy.size.height * 0.85)
 
-                                                        RoundedRectangle(cornerRadius: 3.5, style: .continuous)
-                                                            .frame(height: getBarHeight(point: entry.dictionary[day]!, size: proxy.size))
+                                                        RoundedRectangle(
+                                                            cornerRadius: 3.5, style: .continuous
+                                                        )
+                                                        .frame(
+                                                            height: getBarHeight(
+                                                                point: entry.dictionary[day]!,
+                                                                size: proxy.size))
                                                     }
 
                                                     Text(getWeekday(day: day).prefix(1))
-                                                        .font(.system(size: 8, weight: .bold, design: .rounded))
+                                                        .font(
+                                                            .system(
+                                                                size: 8, weight: .bold,
+                                                                design: .rounded)
+                                                        )
                                                         .foregroundColor(Color.SubtitleText)
                                                 }
                                                 .opacity(day > Date.now ? 0.3 : 1)
@@ -415,14 +476,30 @@ struct InsightsWidgetEntryView: View {
                                                         .frame(height: proxy.size.height * 0.85)
 
                                                     Capsule()
-                                                        .frame(height: getBarHeight(point: entry.dictionary[day]!, size: proxy.size))
+                                                        .frame(
+                                                            height: getBarHeight(
+                                                                point: entry.dictionary[day]!,
+                                                                size: proxy.size)
+                                                        )
                                                         .overlay(alignment: .bottom) {
-                                                            if numberArray.contains((entry.dates.firstIndex(of: day) ?? -1) + 1) && firstDayOfMonth == 1 {
-                                                                Text("\((entry.dates.firstIndex(of: day) ?? -1) + 1)")
-                                                                    .font(.system(size: 8, weight: .bold, design: .rounded))
-                                                                    .foregroundColor(Color.SubtitleText)
-                                                                    .frame(width: 20, alignment: .center)
-                                                                    .offset(y: 15)
+                                                            if numberArray.contains(
+                                                                (entry.dates.firstIndex(of: day)
+                                                                    ?? -1) + 1)
+                                                                && firstDayOfMonth == 1
+                                                            {
+                                                                Text(
+                                                                    "\((entry.dates.firstIndex(of: day) ?? -1) + 1)"
+                                                                )
+                                                                .font(
+                                                                    .system(
+                                                                        size: 8, weight: .bold,
+                                                                        design: .rounded)
+                                                                )
+                                                                .foregroundColor(Color.SubtitleText)
+                                                                .frame(
+                                                                    width: 20, alignment: .center
+                                                                )
+                                                                .offset(y: 15)
                                                             }
                                                         }
                                                 }
@@ -436,21 +513,41 @@ struct InsightsWidgetEntryView: View {
                                         HStack(spacing: 2.5) {
                                             ForEach(entry.dates, id: \.self) { day in
                                                 ZStack(alignment: .bottom) {
-                                                    RoundedRectangle(cornerRadius: 2.7, style: .continuous)
-                                                        .fill(Color.SecondaryBackground)
-                                                        .frame(height: proxy.size.height * 0.85)
+                                                    RoundedRectangle(
+                                                        cornerRadius: 2.7, style: .continuous
+                                                    )
+                                                    .fill(Color.SecondaryBackground)
+                                                    .frame(height: proxy.size.height * 0.85)
 
-                                                    RoundedRectangle(cornerRadius: 2.7, style: .continuous)
-                                                        .frame(height: getBarHeight(point: entry.dictionary[day]!, size: proxy.size))
-                                                        .overlay(alignment: .bottom) {
-                                                            if monthNumberArray.contains((entry.dates.firstIndex(of: day) ?? -1) + 1) {
-                                                                Text(LocalizedStringKey(monthNames[(entry.dates.firstIndex(of: day)! + 1)] ?? ""))
-                                                                    .font(.system(size: 8, weight: .bold, design: .rounded))
-                                                                    .foregroundColor(Color.SubtitleText)
-                                                                    .frame(width: 20, alignment: .center)
-                                                                    .offset(y: 15)
-                                                            }
+                                                    RoundedRectangle(
+                                                        cornerRadius: 2.7, style: .continuous
+                                                    )
+                                                    .frame(
+                                                        height: getBarHeight(
+                                                            point: entry.dictionary[day]!,
+                                                            size: proxy.size)
+                                                    )
+                                                    .overlay(alignment: .bottom) {
+                                                        if monthNumberArray.contains(
+                                                            (entry.dates.firstIndex(of: day) ?? -1)
+                                                                + 1)
+                                                        {
+                                                            Text(
+                                                                LocalizedStringKey(
+                                                                    monthNames[
+                                                                        (entry.dates.firstIndex(
+                                                                            of: day)! + 1)] ?? "")
+                                                            )
+                                                            .font(
+                                                                .system(
+                                                                    size: 8, weight: .bold,
+                                                                    design: .rounded)
+                                                            )
+                                                            .foregroundColor(Color.SubtitleText)
+                                                            .frame(width: 20, alignment: .center)
+                                                            .offset(y: 15)
                                                         }
+                                                    }
                                                 }
                                                 .padding(.bottom, 13)
                                                 .opacity(day > Date.now ? 0.3 : 1)
@@ -468,10 +565,16 @@ struct InsightsWidgetEntryView: View {
                                         .lineLimit(1)
                                         .font(.system(size: 8, weight: .regular, design: .rounded))
                                         .foregroundColor(Color.PrimaryText)
-                                        .opacity((entry.average / Double(getMax())) < 0.2 || (entry.average / Double(getMax())) > 0.8 ? 0 : 1)
+                                        .opacity(
+                                            (entry.average / Double(getMax())) < 0.2
+                                                || (entry.average / Double(getMax())) > 0.8 ? 0 : 1)
 
                                     Line()
-                                        .stroke(Color.SubtitleText, style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5]))
+                                        .stroke(
+                                            Color.SubtitleText,
+                                            style: StrokeStyle(
+                                                lineWidth: 2, lineCap: .round, dash: [5])
+                                        )
                                         .frame(height: 1)
                                         .frame(maxWidth: .infinity)
                                 }
@@ -487,8 +590,11 @@ struct InsightsWidgetEntryView: View {
                     .frame(maxHeight: .infinity)
                     .background(Color.PrimaryBackground)
 
-                    InsightsWidgetCategoryBreakdownView(amount: entry.amount, income: entry.income, categories: entry.categories, duration: entry.duration, ios17: true)
-//                    .frame(width: proxy.size.width * 0.43)
+                    InsightsWidgetCategoryBreakdownView(
+                        amount: entry.amount, income: entry.income, categories: entry.categories,
+                        duration: entry.duration, ios17: true
+                    )
+                    //                    .frame(width: proxy.size.width * 0.43)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -507,7 +613,8 @@ struct InsightsWidgetEntryView: View {
                                 .font(.system(size: 10, weight: .semibold, design: .rounded))
                                 .foregroundColor(Color.SubtitleText)
 
-                            InsightsWidgetDollarView(currencySymbol: currencySymbol, dollarText: dollarText)
+                            InsightsWidgetDollarView(
+                                currencySymbol: currencySymbol, dollarText: dollarText)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -518,13 +625,17 @@ struct InsightsWidgetEntryView: View {
                                     VStack(alignment: .leading) {
                                         Text(getMaxText())
                                             .lineLimit(1)
-                                            .font(.system(size: 8, weight: .regular, design: .rounded))
+                                            .font(
+                                                .system(size: 8, weight: .regular, design: .rounded)
+                                            )
                                             .foregroundColor(Color.SubtitleText)
 
                                         Spacer()
 
                                         Text("0")
-                                            .font(.system(size: 8, weight: .regular, design: .rounded))
+                                            .font(
+                                                .system(size: 8, weight: .regular, design: .rounded)
+                                            )
                                             .foregroundColor(Color.SubtitleText)
                                     }
                                     .frame(height: proxy.size.height * 0.85)
@@ -534,16 +645,27 @@ struct InsightsWidgetEntryView: View {
                                             ForEach(entry.dates, id: \.self) { day in
                                                 VStack(spacing: 3) {
                                                     ZStack(alignment: .bottom) {
-                                                        RoundedRectangle(cornerRadius: 3.5, style: .continuous)
-                                                            .fill(Color.SecondaryBackground)
-                                                            .frame(height: proxy.size.height * 0.85)
+                                                        RoundedRectangle(
+                                                            cornerRadius: 3.5, style: .continuous
+                                                        )
+                                                        .fill(Color.SecondaryBackground)
+                                                        .frame(height: proxy.size.height * 0.85)
 
-                                                        RoundedRectangle(cornerRadius: 3.5, style: .continuous)
-                                                            .frame(height: getBarHeight(point: entry.dictionary[day]!, size: proxy.size))
+                                                        RoundedRectangle(
+                                                            cornerRadius: 3.5, style: .continuous
+                                                        )
+                                                        .frame(
+                                                            height: getBarHeight(
+                                                                point: entry.dictionary[day]!,
+                                                                size: proxy.size))
                                                     }
 
                                                     Text(getWeekday(day: day).prefix(1))
-                                                        .font(.system(size: 8, weight: .bold, design: .rounded))
+                                                        .font(
+                                                            .system(
+                                                                size: 8, weight: .bold,
+                                                                design: .rounded)
+                                                        )
                                                         .foregroundColor(Color.SubtitleText)
                                                 }
                                                 .opacity(day > Date.now ? 0.3 : 1)
@@ -560,14 +682,30 @@ struct InsightsWidgetEntryView: View {
                                                         .frame(height: proxy.size.height * 0.85)
 
                                                     Capsule()
-                                                        .frame(height: getBarHeight(point: entry.dictionary[day]!, size: proxy.size))
+                                                        .frame(
+                                                            height: getBarHeight(
+                                                                point: entry.dictionary[day]!,
+                                                                size: proxy.size)
+                                                        )
                                                         .overlay(alignment: .bottom) {
-                                                            if numberArray.contains((entry.dates.firstIndex(of: day) ?? -1) + 1) && firstDayOfMonth == 1 {
-                                                                Text("\((entry.dates.firstIndex(of: day) ?? -1) + 1)")
-                                                                    .font(.system(size: 8, weight: .bold, design: .rounded))
-                                                                    .foregroundColor(Color.SubtitleText)
-                                                                    .frame(width: 20, alignment: .center)
-                                                                    .offset(y: 15)
+                                                            if numberArray.contains(
+                                                                (entry.dates.firstIndex(of: day)
+                                                                    ?? -1) + 1)
+                                                                && firstDayOfMonth == 1
+                                                            {
+                                                                Text(
+                                                                    "\((entry.dates.firstIndex(of: day) ?? -1) + 1)"
+                                                                )
+                                                                .font(
+                                                                    .system(
+                                                                        size: 8, weight: .bold,
+                                                                        design: .rounded)
+                                                                )
+                                                                .foregroundColor(Color.SubtitleText)
+                                                                .frame(
+                                                                    width: 20, alignment: .center
+                                                                )
+                                                                .offset(y: 15)
                                                             }
                                                         }
                                                 }
@@ -581,21 +719,41 @@ struct InsightsWidgetEntryView: View {
                                         HStack(spacing: 2.5) {
                                             ForEach(entry.dates, id: \.self) { day in
                                                 ZStack(alignment: .bottom) {
-                                                    RoundedRectangle(cornerRadius: 2.7, style: .continuous)
-                                                        .fill(Color.SecondaryBackground)
-                                                        .frame(height: proxy.size.height * 0.85)
+                                                    RoundedRectangle(
+                                                        cornerRadius: 2.7, style: .continuous
+                                                    )
+                                                    .fill(Color.SecondaryBackground)
+                                                    .frame(height: proxy.size.height * 0.85)
 
-                                                    RoundedRectangle(cornerRadius: 2.7, style: .continuous)
-                                                        .frame(height: getBarHeight(point: entry.dictionary[day]!, size: proxy.size))
-                                                        .overlay(alignment: .bottom) {
-                                                            if monthNumberArray.contains((entry.dates.firstIndex(of: day) ?? -1) + 1) {
-                                                                Text(LocalizedStringKey(monthNames[(entry.dates.firstIndex(of: day)! + 1)] ?? ""))
-                                                                    .font(.system(size: 8, weight: .bold, design: .rounded))
-                                                                    .foregroundColor(Color.SubtitleText)
-                                                                    .frame(width: 20, alignment: .center)
-                                                                    .offset(y: 15)
-                                                            }
+                                                    RoundedRectangle(
+                                                        cornerRadius: 2.7, style: .continuous
+                                                    )
+                                                    .frame(
+                                                        height: getBarHeight(
+                                                            point: entry.dictionary[day]!,
+                                                            size: proxy.size)
+                                                    )
+                                                    .overlay(alignment: .bottom) {
+                                                        if monthNumberArray.contains(
+                                                            (entry.dates.firstIndex(of: day) ?? -1)
+                                                                + 1)
+                                                        {
+                                                            Text(
+                                                                LocalizedStringKey(
+                                                                    monthNames[
+                                                                        (entry.dates.firstIndex(
+                                                                            of: day)! + 1)] ?? "")
+                                                            )
+                                                            .font(
+                                                                .system(
+                                                                    size: 8, weight: .bold,
+                                                                    design: .rounded)
+                                                            )
+                                                            .foregroundColor(Color.SubtitleText)
+                                                            .frame(width: 20, alignment: .center)
+                                                            .offset(y: 15)
                                                         }
+                                                    }
                                                 }
                                                 .padding(.bottom, 13)
                                                 .opacity(day > Date.now ? 0.3 : 1)
@@ -613,10 +771,16 @@ struct InsightsWidgetEntryView: View {
                                         .lineLimit(1)
                                         .font(.system(size: 8, weight: .regular, design: .rounded))
                                         .foregroundColor(Color.PrimaryText)
-                                        .opacity((entry.average / Double(getMax())) < 0.2 || (entry.average / Double(getMax())) > 0.8 ? 0 : 1)
+                                        .opacity(
+                                            (entry.average / Double(getMax())) < 0.2
+                                                || (entry.average / Double(getMax())) > 0.8 ? 0 : 1)
 
                                     Line()
-                                        .stroke(Color.SubtitleText, style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [5]))
+                                        .stroke(
+                                            Color.SubtitleText,
+                                            style: StrokeStyle(
+                                                lineWidth: 2, lineCap: .round, dash: [5])
+                                        )
                                         .frame(height: 1)
                                         .frame(maxWidth: .infinity)
                                 }
@@ -632,7 +796,10 @@ struct InsightsWidgetEntryView: View {
                     .frame(maxHeight: .infinity)
                     .background(Color.PrimaryBackground)
 
-                    InsightsWidgetCategoryBreakdownView(amount: entry.amount, income: entry.income, categories: entry.categories, duration: entry.duration, ios17: false)
+                    InsightsWidgetCategoryBreakdownView(
+                        amount: entry.amount, income: entry.income, categories: entry.categories,
+                        duration: entry.duration, ios17: false
+                    )
                     .padding(15)
                     .frame(width: proxy.size.width * 0.43)
                     .frame(maxHeight: .infinity)
@@ -650,7 +817,8 @@ struct InsightsWidgetEntryView: View {
         if maxi == 0 {
             return 0
         } else {
-            let height = (size.height * 0.85) - ((entry.average / Double(maxi)) * (size.height * 0.85))
+            let height =
+                (size.height * 0.85) - ((entry.average / Double(maxi)) * (size.height * 0.85))
             return height
         }
     }
@@ -744,14 +912,33 @@ struct HorizontalBarGraph: View {
                     if category.percent < 0.02 {
                         EmptyView()
                     } else if category.percent < 0.1 {
-                        RoundedRectangle(cornerRadius: 0.09 + (0.25 * category.percent * 100), style: .continuous)
-                            .fill(income ? Color(hex: Color.colorArray[categories.firstIndex(of: category) ?? 0]) : Color(hex: category.colour))
-                            .frame(width: (proxy.size.width * (1.0 - (0.015 * Double(categories.count - 1)))) * category.percent)
+                        RoundedRectangle(
+                            cornerRadius: 0.09 + (0.25 * category.percent * 100), style: .continuous
+                        )
+                        .fill(
+                            income
+                                ? Color(
+                                    hex: Color.colorArray[categories.firstIndex(of: category) ?? 0])
+                                : Color(hex: category.colour)
+                        )
+                        .frame(
+                            width: (proxy.size.width
+                                * (1.0 - (0.015 * Double(categories.count - 1)))) * category.percent
+                        )
 
                     } else {
                         RoundedRectangle(cornerRadius: 3.5, style: .continuous)
-                            .fill(income ? Color(hex: Color.colorArray[categories.firstIndex(of: category) ?? 0]) : Color(hex: category.colour))
-                            .frame(width: (proxy.size.width * (1.0 - (0.015 * Double(categories.count - 1)))) * category.percent)
+                            .fill(
+                                income
+                                    ? Color(
+                                        hex: Color.colorArray[
+                                            categories.firstIndex(of: category) ?? 0])
+                                    : Color(hex: category.colour)
+                            )
+                            .frame(
+                                width: (proxy.size.width
+                                    * (1.0 - (0.015 * Double(categories.count - 1))))
+                                    * category.percent)
                     }
                 }
             }
@@ -769,9 +956,10 @@ struct InsightsWidgetDollarView: View {
             Group {
                 Text(currencySymbol)
                     .font(.system(.subheadline, design: .rounded).weight(.medium))
-                    .foregroundColor(Color.SubtitleText) +
+                    .foregroundColor(Color.SubtitleText)
+                    +
 
-                Text(dollarText)
+                    Text(dollarText)
                     .font(.system(.title3, design: .rounded).weight(.medium))
                     .foregroundColor(Color.PrimaryText)
             }
@@ -812,7 +1000,13 @@ struct InsightsWidgetCategoryBreakdownView: View {
                     ForEach(Array(categories.prefix(3)), id: \.self) { category in
                         HStack(spacing: 7) {
                             RoundedRectangle(cornerRadius: 3)
-                                .fill(income ? Color(hex: Color.colorArray[categories.firstIndex(of: category) ?? 0]) : Color(hex: category.colour))
+                                .fill(
+                                    income
+                                        ? Color(
+                                            hex: Color.colorArray[
+                                                categories.firstIndex(of: category) ?? 0])
+                                        : Color(hex: category.colour)
+                                )
                                 .frame(width: 8, height: 8)
                             Text(category.name)
                                 .lineLimit(1)
@@ -829,8 +1023,11 @@ struct InsightsWidgetCategoryBreakdownView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             } else {
                 Text("NO TRANSACTIONS\n\(subtitleText1)")
-                    .font(.system(size: 10,
-                                  weight: .medium, design: .rounded))
+                    .font(
+                        .system(
+                            size: 10,
+                            weight: .medium, design: .rounded)
+                    )
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.SubtitleText)
                     .frame(maxHeight: .infinity)
@@ -847,7 +1044,9 @@ struct InsightsWidgetCategoryBreakdownView: View {
                 }
                 .padding(.vertical, 4)
                 .frame(maxWidth: .infinity)
-                .background(RoundedRectangle(cornerRadius: 5).fill(ios17 ? Color.SecondaryBackground : Color.PrimaryBackground))
+                .background(
+                    RoundedRectangle(cornerRadius: 5).fill(
+                        ios17 ? Color.SecondaryBackground : Color.PrimaryBackground))
             }
         }
     }

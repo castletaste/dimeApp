@@ -8,7 +8,9 @@
 import Foundation
 import StoreKit
 
-class UnlockManager: NSObject, ObservableObject, SKPaymentTransactionObserver, SKProductsRequestDelegate {
+class UnlockManager: NSObject, ObservableObject, SKPaymentTransactionObserver,
+    SKProductsRequestDelegate
+{
     enum RequestState {
         case loading
         case loaded
@@ -32,7 +34,9 @@ class UnlockManager: NSObject, ObservableObject, SKPaymentTransactionObserver, S
 
     var loadedProducts = [SKProduct]()
 
-    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+    func paymentQueue(
+        _ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]
+    ) {
         DispatchQueue.main.async { [self] in
             for transaction in transactions {
                 switch transaction.transactionState {
@@ -64,7 +68,9 @@ class UnlockManager: NSObject, ObservableObject, SKPaymentTransactionObserver, S
             }
 
             if response.invalidProductIdentifiers.isEmpty == false {
-                print("ALERT: Received invalid product identifiers: \(response.invalidProductIdentifiers)")
+                print(
+                    "ALERT: Received invalid product identifiers: \(response.invalidProductIdentifiers)"
+                )
                 self.requestState = .failed
                 return
             }
@@ -93,7 +99,9 @@ class UnlockManager: NSObject, ObservableObject, SKPaymentTransactionObserver, S
         self.dataController = dataController
 
         // Prepare to look for our unlock product.
-        let productIDs = Set(["com.rafaelsoh.dime.smalltip", "com.rafaelsoh.dime.mediumtip", "com.rafaelsoh.dime.largetip"])
+        let productIDs = Set([
+            "wtf.savva.dime.smalltip", "wtf.savva.dime.mediumtip", "wtf.savva.dime.largetip",
+        ])
         request = SKProductsRequest(productIdentifiers: productIDs)
 
         // This is required because we inherit from NSObject.

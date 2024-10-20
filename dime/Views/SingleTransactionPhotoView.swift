@@ -18,7 +18,8 @@ struct SingleDayPhotoView: View {
     let swapTimeLabel: Bool
     let future: Bool
 
-    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var colourScheme: Int = 0
+    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var colourScheme: Int = 0
 
     @Environment(\.colorScheme) var systemColorScheme
 
@@ -44,16 +45,19 @@ struct SingleDayPhotoView: View {
                 }
 
                 ForEach(transactions, id: \.id) { transaction in
-                    SingleTransactionPhotoView(transaction: transaction, showCents: showCents, currencySymbol: currencySymbol, currency: currency, swapTimeLabel: swapTimeLabel, future: future)
+                    SingleTransactionPhotoView(
+                        transaction: transaction, showCents: showCents,
+                        currencySymbol: currencySymbol, currency: currency,
+                        swapTimeLabel: swapTimeLabel, future: future)
                 }
             }
             .padding(30)
             .frame(maxWidth: .infinity)
             .background(Color.PrimaryBackground, in: RoundedRectangle(cornerRadius: 40))
             .shadow(color: Color.Outline, radius: 30)
-//            .background(Color.neuBackground, in: RoundedRectangle(cornerRadius: 40))
-//            .shadow(color: .dropShadow, radius: 45, x: 40, y: 40)
-//            .shadow(color: .dropLight, radius: 45, x: -40, y: -40)
+            //            .background(Color.neuBackground, in: RoundedRectangle(cornerRadius: 40))
+            //            .shadow(color: .dropShadow, radius: 45, x: 40, y: 40)
+            //            .shadow(color: .dropLight, radius: 45, x: -40, y: -40)
         }
         .padding(60)
         .background(Color.PrimaryBackground)
@@ -85,19 +89,24 @@ struct SingleTransactionPhotoView: View {
 
     var body: some View {
         HStack(spacing: 25) {
-            EmojiLogView(emoji: (transaction.category?.wrappedEmoji ?? ""),
-                         colour: (transaction.category?.wrappedColour ?? "#FFFFFF"), future: future, huge: true)
-                .frame(width: 100, height: 100, alignment: .center)
-                .overlay(alignment: .bottomTrailing) {
-                    if transaction.recurringType > 0 {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(Color.DarkIcon)
-                            .padding(3)
-                            .background(Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 6))
-                            .offset(x: 5, y: 5)
-                    }
+            EmojiLogView(
+                emoji: (transaction.category?.wrappedEmoji ?? ""),
+                colour: (transaction.category?.wrappedColour ?? "#FFFFFF"), future: future,
+                huge: true
+            )
+            .frame(width: 100, height: 100, alignment: .center)
+            .overlay(alignment: .bottomTrailing) {
+                if transaction.recurringType > 0 {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(Color.DarkIcon)
+                        .padding(3)
+                        .background(
+                            Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 6)
+                        )
+                        .offset(x: 5, y: 5)
                 }
+            }
 
             VStack(alignment: .leading, spacing: 5.5) {
                 Text(transaction.wrappedNote)
@@ -151,7 +160,7 @@ struct SingleTransactionPhotoView: View {
                     .layoutPriority(1)
             }
         }
-//        .background(Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 40))
+        //        .background(Color.SecondaryBackground, in: RoundedRectangle(cornerRadius: 40))
 
         .frame(maxWidth: .infinity)
     }

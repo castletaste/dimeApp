@@ -61,7 +61,7 @@ struct DeleteAllAlert: View {
   @Environment(\.dismiss) var dismiss
   @Environment(\.colorScheme) var systemColorScheme
 
-  @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
+  @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
   var bottomEdge: Double = 15
 
   @State private var offset: CGFloat = 0
@@ -159,7 +159,7 @@ struct DeleteAllAlert: View {
           }
 
         } label: {
-            DeleteButton(text: "Back Out", red: false)
+          DeleteButton(text: "Back Out", red: false)
         }
       }
       .padding(13)

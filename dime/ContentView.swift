@@ -11,34 +11,46 @@ struct ContentView: View {
     @EnvironmentObject var appLockVM: AppLockViewModel
     @EnvironmentObject var dataController: DataController
 
-    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var colourScheme: Int = 0
+    @AppStorage("colourScheme", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var colourScheme: Int = 0
     @Environment(\.scenePhase) var scenePhase
-    @AppStorage("showNotifications", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showNotifications: Bool = false
-    @AppStorage("notificationsEnabled", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var notificationsEnabled: Bool = true
+    @AppStorage("showNotifications", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var showNotifications: Bool = false
+    @AppStorage("notificationsEnabled", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var notificationsEnabled: Bool = true
 
-    @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var firstLaunch: Bool = true
+    @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var firstLaunch: Bool = true
 
     // adds category orders
-    @AppStorage("dataMigration1", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var dataMigration1: Bool = true
+    @AppStorage("dataMigration1", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var dataMigration1: Bool = true
 
     // converts category colors to hex codes
-    @AppStorage("dataMigration2", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var dataMigration2: Bool = true
+    @AppStorage("dataMigration2", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var dataMigration2: Bool = true
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
 
     @State var showIntro: Bool = false
     @State var showUpdate: Bool = false
 
     var center = UNUserNotificationCenter.current()
 
-    @AppStorage("topEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var savedTopEdge: Double = 30
-    @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var savedBottomEdge: Double = 15
+    @AppStorage("topEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var savedTopEdge:
+        Double = 30
+    @AppStorage("bottomEdge", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var savedBottomEdge: Double = 15
 
     // updateSheetShowing
 
-    @AppStorage("previousVersion", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var previousVersionString: String = "Version \(UIApplication.appVersion ?? "") (\(UIApplication.buildNumber ?? ""))"
+    @AppStorage("previousVersion", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var previousVersionString: String =
+        "Version \(UIApplication.appVersion ?? "") (\(UIApplication.buildNumber ?? ""))"
 
-    @AppStorage("showUpdateSheet", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var showUpdateSheet: Bool = true
+    @AppStorage("showUpdateSheet", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var showUpdateSheet: Bool = true
 
     var body: some View {
         GeometryReader { proxy in
@@ -61,15 +73,15 @@ struct ContentView: View {
         }
         .ignoresSafeArea(.keyboard)
         .onAppear {
-//            UserDefaults(suiteName: "group.com.rafaelsoh.dime")!.set(false, forKey: "newTransactionAdded")
-//            WidgetCenter.shared.reloadTimelines(ofKind: "TemplateTransactions")
+            //            UserDefaults(suiteName: "group.wtf.savva.dime")!.set(false, forKey: "newTransactionAdded")
+            //            WidgetCenter.shared.reloadTimelines(ofKind: "TemplateTransactions")
 
             if appLockVM.isAppLockEnabled {
                 appLockVM.appLockValidation()
             }
 
             let defaults =
-                UserDefaults(suiteName: "group.com.rafaelsoh.dime") ?? UserDefaults.standard
+                UserDefaults(suiteName: "group.wtf.savva.dime") ?? UserDefaults.standard
 
             if defaults.object(forKey: "firstDayOfMonth") == nil {
                 defaults.set(1, forKey: "firstDayOfMonth")
@@ -90,18 +102,22 @@ struct ContentView: View {
                 defaults.set(true, forKey: "animated")
 
                 if NSUbiquitousKeyValueStore.default.string(forKey: "currency") == nil {
-                    NSUbiquitousKeyValueStore.default.set(Locale.current.currencyCode!, forKey: "currency")
+                    NSUbiquitousKeyValueStore.default.set(
+                        Locale.current.currencyCode!, forKey: "currency")
                 } else {
                     currency = NSUbiquitousKeyValueStore.default.string(forKey: "currency")!
                 }
 
                 defaults.set(2, forKey: "numberEntryType")
             } else {
-                if let holdingCurrency = NSUbiquitousKeyValueStore.default.string(forKey: "currency") {
+                if let holdingCurrency = NSUbiquitousKeyValueStore.default.string(
+                    forKey: "currency")
+                {
                     currency = holdingCurrency
                 } else {
                     currency = Locale.current.currencyCode!
-                    NSUbiquitousKeyValueStore.default.set(Locale.current.currencyCode!, forKey: "currency")
+                    NSUbiquitousKeyValueStore.default.set(
+                        Locale.current.currencyCode!, forKey: "currency")
                 }
             }
 
@@ -127,7 +143,8 @@ struct ContentView: View {
                         category.colour = "#76FBB1"
                     } else {
                         if Double(category.wrappedColour) != nil {
-                            category.colour = Color.colourMigrationDictionary[category.wrappedColour] ?? "#FFFFFF"
+                            category.colour =
+                                Color.colourMigrationDictionary[category.wrappedColour] ?? "#FFFFFF"
                         }
                     }
                 }

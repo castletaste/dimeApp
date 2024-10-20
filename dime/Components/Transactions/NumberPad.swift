@@ -5,8 +5,8 @@
 //  Created by Yumi on 2023-10-29.
 //
 
-import SwiftUI
 import CoreHaptics
+import SwiftUI
 
 enum AssignedDecimal {
     case none, first, second
@@ -20,9 +20,10 @@ struct NumberPad: View {
     var showingNotePicker: Bool = false
     var submit: () -> Void
 
-    @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var numberEntryType: Int = 1
-    @AppStorage("haptics", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime"))
-        var hapticType: Int = 1
+    @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var numberEntryType: Int = 1
+    @AppStorage("haptics", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var hapticType: Int = 1
 
     var numPadNumbers = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
@@ -46,7 +47,9 @@ struct NumberPad: View {
                             Image("tag-cross")
                                 .resizable()
                                 .frame(width: 32, height: 32)
-                                .frame(width: proxy.size.width * 0.3, height: proxy.size.height * 0.22)
+                                .frame(
+                                    width: proxy.size.width * 0.3, height: proxy.size.height * 0.22
+                                )
                                 .background(Color.DarkBackground)
                                 .foregroundColor(Color.LightIcon)
                                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -58,7 +61,9 @@ struct NumberPad: View {
                         } label: {
                             Text(".")
                                 .font(.system(size: 34, weight: .regular, design: .rounded))
-                                .frame(width: proxy.size.width * 0.3, height: proxy.size.height * 0.22)
+                                .frame(
+                                    width: proxy.size.width * 0.3, height: proxy.size.height * 0.22
+                                )
                                 .background(Color.SecondaryBackground)
                                 .foregroundColor(Color.PrimaryText)
                                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -75,7 +80,8 @@ struct NumberPad: View {
                             if #available(iOS 17.0, *) {
                                 Image(systemName: "checkmark.square.fill")
                                     .font(.system(size: 30, weight: .medium, design: .rounded))
-                                    .symbolEffect(.bounce.up.byLayer, value: price != 0 && category != nil)
+                                    .symbolEffect(
+                                        .bounce.up.byLayer, value: price != 0 && category != nil)
                             } else {
                                 Image(systemName: "checkmark.square.fill")
                                     .font(.system(size: 30, weight: .medium, design: .rounded))
@@ -83,7 +89,9 @@ struct NumberPad: View {
                         }
                         .frame(width: proxy.size.width * 0.3, height: proxy.size.height * 0.22)
                         .foregroundColor(Color.LightIcon)
-                        .background(Color.DarkBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .background(
+                            Color.DarkBackground,
+                            in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
                     .buttonStyle(NumPadButton())
                 }
@@ -112,10 +120,12 @@ struct NumberPad: View {
 
         let hapticDict = [
             CHHapticPattern.Key.pattern: [
-                [CHHapticPattern.Key.event: [
-                    CHHapticPattern.Key.eventType: CHHapticEvent.EventType.hapticTransient,
-                    CHHapticPattern.Key.time: CHHapticTimeImmediate,
-                    CHHapticPattern.Key.eventDuration: 1.0]
+                [
+                    CHHapticPattern.Key.event: [
+                        CHHapticPattern.Key.eventType: CHHapticEvent.EventType.hapticTransient,
+                        CHHapticPattern.Key.time: CHHapticTimeImmediate,
+                        CHHapticPattern.Key.eventDuration: 1.0,
+                    ]
                 ]
             ]
         ]
@@ -135,23 +145,23 @@ struct NumberPad: View {
             print("Failed to play pattern: \(error.localizedDescription).")
         }
 
-//        
-//        var events = [CHHapticEvent]()
-//
-//        // create one intense, sharp tap
-//        let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1)
-//        let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 1)
-//        let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0)
-//        events.append(event)
-//
-//        // convert those events into a pattern and play it immediately
-//        do {
-//            let pattern = try CHHapticPattern(events: events, parameters: [])
-//            let player = try engine?.makePlayer(with: pattern)
-//            try player?.start(atTime: 0)
-//        } catch {
-//            print("Failed to play pattern: \(error.localizedDescription).")
-//        }
+        //
+        //        var events = [CHHapticEvent]()
+        //
+        //        // create one intense, sharp tap
+        //        let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1)
+        //        let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 1)
+        //        let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0)
+        //        events.append(event)
+        //
+        //        // convert those events into a pattern and play it immediately
+        //        do {
+        //            let pattern = try CHHapticPattern(events: events, parameters: [])
+        //            let player = try engine?.makePlayer(with: pattern)
+        //            try player?.start(atTime: 0)
+        //        } catch {
+        //            print("Failed to play pattern: \(error.localizedDescription).")
+        //        }
     }
 
     public func deleteLastDigit() {
@@ -161,15 +171,15 @@ struct NumberPad: View {
             price = Double(Int(price / 10))
         } else {
             switch decimalValuesAssigned {
-                case .none:
-                    return
-                case .first:
-                    price = Double(Int(price))
-                    isEditingDecimal = false
-                    decimalValuesAssigned = .none
-                case .second:
-                    price = Double(Int(price * 10)) / 10
-                    decimalValuesAssigned = .first
+            case .none:
+                return
+            case .first:
+                price = Double(Int(price))
+                isEditingDecimal = false
+                decimalValuesAssigned = .none
+            case .second:
+                price = Double(Int(price * 10)) / 10
+                decimalValuesAssigned = .first
             }
         }
     }
@@ -177,7 +187,7 @@ struct NumberPad: View {
     @ViewBuilder
     private func NumberButton(number: Int, size: CGSize) -> some View {
         var disabled: Bool {
-            price >= 100000000
+            price >= 100_000_000
         }
 
         Button {
@@ -195,14 +205,14 @@ struct NumberPad: View {
             } else {
                 if isEditingDecimal {
                     switch decimalValuesAssigned {
-                        case .none:
-                            price += Double(number) / 10
-                            decimalValuesAssigned = .first
-                        case .first:
-                            price += Double(number) / 100
-                            decimalValuesAssigned = .second
-                        case .second:
-                            return
+                    case .none:
+                        price += Double(number) / 10
+                        decimalValuesAssigned = .first
+                    case .first:
+                        price += Double(number) / 100
+                        decimalValuesAssigned = .second
+                    case .second:
+                        return
                     }
                 } else {
                     price *= 10
@@ -241,16 +251,18 @@ struct NumberPadTextView: View {
     @Binding var isEditingDecimal: Bool
     @Binding var decimalValuesAssigned: AssignedDecimal
 
-    @AppStorage("currency", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var currency: String = Locale.current.currencyCode!
+    @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
+        String = Locale.current.currencyCode!
     var currencySymbol: String {
         return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
     }
-//
-//    var displayNumbers: [String] {
-//        return splitDouble(price)
-//    }
+    //
+    //    var displayNumbers: [String] {
+    //        return splitDouble(price)
+    //    }
 
-    @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var numberEntryType: Int = 1
+    @AppStorage("numberEntryType", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var numberEntryType: Int = 1
 
     public var amount: String {
         if numberEntryType == 1 {
@@ -258,12 +270,12 @@ struct NumberPadTextView: View {
         }
         if isEditingDecimal {
             switch decimalValuesAssigned {
-                case .none:
-                    return String(format: "%.0f", price) + "."
-                case .first:
-                    return String(format: "%.1f", price)
-                case .second:
-                    return String(format: "%.2f", price)
+            case .none:
+                return String(format: "%.0f", price) + "."
+            case .first:
+                return String(format: "%.1f", price)
+            case .second:
+                return String(format: "%.2f", price)
             }
         }
         return String(format: "%.0f", price)
@@ -299,14 +311,14 @@ struct NumberPadTextView: View {
                     .font(.system(.largeTitle, design: .rounded))
                     .foregroundColor(Color.SubtitleText)
 
-//                ForEach(displayNumbers, id: \.self) { number in
-//                    Text(number)
-//                        .font(.system(size: largerFontSize, weight: .regular, design: .rounded))
-//                        .foregroundColor(Color.PrimaryText)
-//                        .transition(AnyTransition.opacity.combined(with: .scale).combined(with: .move(edge: .trailing)))
-//                }
+                    //                ForEach(displayNumbers, id: \.self) { number in
+                    //                    Text(number)
+                    //                        .font(.system(size: largerFontSize, weight: .regular, design: .rounded))
+                    //                        .foregroundColor(Color.PrimaryText)
+                    //                        .transition(AnyTransition.opacity.combined(with: .scale).combined(with: .move(edge: .trailing)))
+                    //                }
 
-                + Text(amount)
+                    + Text(amount)
                     .font(.system(size: largerFontSize, weight: .regular, design: .rounded))
                     .foregroundColor(Color.PrimaryText)
 
@@ -321,23 +333,23 @@ struct NumberPadTextView: View {
                 DeleteButton()
             }
         }
-//        .animation(.snappy.delay(0.1), value: displayNumbers)
+        //        .animation(.snappy.delay(0.1), value: displayNumbers)
     }
 
     @ViewBuilder
-   func DeleteButton() -> some View {
-       Button {
-         deleteLastDigit()
-       } label: {
-         Image(systemName: "delete.left.fill")
-           .font(.system(size: 16, weight: .semibold))
-           .foregroundColor(Color.SubtitleText)
-           .padding(7)
-           .background(Color.SecondaryBackground, in: Circle())
-           .contentShape(Circle())
-       }
-       .disabled(price == 0)
-   }
+    func DeleteButton() -> some View {
+        Button {
+            deleteLastDigit()
+        } label: {
+            Image(systemName: "delete.left.fill")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundColor(Color.SubtitleText)
+                .padding(7)
+                .background(Color.SecondaryBackground, in: Circle())
+                .contentShape(Circle())
+        }
+        .disabled(price == 0)
+    }
 
     public func deleteLastDigit() {
         if numberEntryType == 1 {
@@ -346,15 +358,15 @@ struct NumberPadTextView: View {
             price = Double(Int(price / 10))
         } else {
             switch decimalValuesAssigned {
-                case .none:
-                    return
-                case .first:
-                    price = Double(Int(price))
-                    isEditingDecimal = false
-                    decimalValuesAssigned = .none
-                case .second:
-                    price = Double(Int(price * 10)) / 10
-                    decimalValuesAssigned = .first
+            case .none:
+                return
+            case .first:
+                price = Double(Int(price))
+                isEditingDecimal = false
+                decimalValuesAssigned = .none
+            case .second:
+                price = Double(Int(price * 10)) / 10
+                decimalValuesAssigned = .first
             }
         }
     }

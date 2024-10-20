@@ -14,20 +14,23 @@ class KeyboardHeightHelper: ObservableObject {
     @Published var keyboardHeight: CGFloat = 0
 
     private func listenForKeyboardNotifications() {
-        NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification,
-                                               object: nil,
-                                               queue: .main) { notification in
+        NotificationCenter.default.addObserver(
+            forName: UIResponder.keyboardDidShowNotification,
+            object: nil,
+            queue: .main
+        ) { notification in
             guard let userInfo = notification.userInfo,
-                  let keyboardRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+                let keyboardRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+            else { return }
 
             self.keyboardHeight = keyboardRect.height
         }
 
-//        NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidHideNotification,
-//                                               object: nil,
-//                                               queue: .main) { (notification) in
-//                                                self.keyboardHeight = 0
-//        }
+        //        NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidHideNotification,
+        //                                               object: nil,
+        //                                               queue: .main) { (notification) in
+        //                                                self.keyboardHeight = 0
+        //        }
     }
 
     init() {
@@ -39,11 +42,15 @@ extension Publishers {
     // 1.
     static var keyboardHeight: AnyPublisher<CGFloat, Never> {
         // 2.
-        let willShow = NotificationCenter.default.publisher(for: UIApplication.keyboardWillShowNotification)
-            .map { $0.keyboardHeight }
+        let willShow = NotificationCenter.default.publisher(
+            for: UIApplication.keyboardWillShowNotification
+        )
+        .map { $0.keyboardHeight }
 
-        let willHide = NotificationCenter.default.publisher(for: UIApplication.keyboardWillHideNotification)
-            .map { _ in CGFloat(0) }
+        let willHide = NotificationCenter.default.publisher(
+            for: UIApplication.keyboardWillHideNotification
+        )
+        .map { _ in CGFloat(0) }
 
         // 3.
         return MergeMany(willShow, willHide)
@@ -77,9 +84,10 @@ extension UIApplication {
 }
 
 struct KeyboardAwareModifier: ViewModifier {
-    @AppStorage("keyboard", store: UserDefaults(suiteName: "group.com.rafaelsoh.dime")) var savedKeyboardHeight: Double = .init(UIScreen.main.bounds.height / 2.5)
+    @AppStorage("keyboard", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    var savedKeyboardHeight: Double = .init(UIScreen.main.bounds.height / 2.5)
     var showToolbar: Bool
-//    @State private var keyboardHeight: CGFloat = 250
+    //    @State private var keyboardHeight: CGFloat = 250
 
     private var keyboardHeightPublisher: AnyPublisher<CGFloat, Never> {
         Publishers.Merge(
