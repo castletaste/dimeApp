@@ -1113,21 +1113,26 @@ struct TransactionView: View {
 
         // Заполняем основные данные транзакции
         if note.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
-            transaction.note = category!.wrappedName
+            transaction.note = category?.wrappedName ?? ""
         } else {
             transaction.note = note.trimmingCharacters(in: .whitespaces)
         }
 
         transaction.category = category
         transaction.date = date
+        transaction.id = UUID()
         transaction.income = income
 
-        let calendar = Calendar.current
+        if let unwrappedCategory = category {
+            transaction.category = unwrappedCategory
+        }
+
+        let calendar = Calendar(identifier: .gregorian)
         let dateComponents = calendar.dateComponents([.month, .year], from: date)
         transaction.month = calendar.date(from: dateComponents) ?? Date.now
 
         // Устанавливаем свойство day для группировки
-        transaction.day = calendar.startOfDay(for: date)
+        transaction.day = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date) ?? Date.now
 
         if repeatType > 0 {
             transaction.onceRecurring = true
@@ -1178,7 +1183,7 @@ struct TransactionView: View {
             }
 
             do {
-                try moc.save()
+                try? moc.save()
                 dismiss()
             } catch {
                 print("Failed to save transaction: \(error)")
