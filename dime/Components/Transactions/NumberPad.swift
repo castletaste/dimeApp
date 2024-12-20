@@ -307,21 +307,13 @@ struct NumberPadTextView: View {
     var body: some View {
         HStack(alignment: .lastTextBaseline, spacing: 0) {
             Group {
-                Text(currencySymbol)
-                    .font(.system(.largeTitle, design: .rounded))
-                    .foregroundColor(Color.SubtitleText)
+                // Text(currencySymbol)
+                //     .font(.system(.largeTitle, design: .rounded))
+                //     .foregroundColor(Color.SubtitleText)
 
-                    //                ForEach(displayNumbers, id: \.self) { number in
-                    //                    Text(number)
-                    //                        .font(.system(size: largerFontSize, weight: .regular, design: .rounded))
-                    //                        .foregroundColor(Color.PrimaryText)
-                    //                        .transition(AnyTransition.opacity.combined(with: .scale).combined(with: .move(edge: .trailing)))
-                    //                }
-
-                    + Text(amount)
+                Text(amount)
                     .font(.system(size: largerFontSize, weight: .regular, design: .rounded))
                     .foregroundColor(Color.PrimaryText)
-
             }
         }
         .minimumScaleFactor(0.5)

@@ -49,8 +49,15 @@ struct TransactionView: View {
 
     @AppStorage("currency", store: UserDefaults(suiteName: "group.wtf.savva.dime")) var currency:
         String = Locale.current.currencyCode!
+    @State private var selectedCurrency: String = ""
+    @State private var showCurrencyPicker = false
+
+    @AppStorage("exchangeRatesApiKey", store: UserDefaults(suiteName: "group.wtf.savva.dime"))
+    private var apiKey: String = ""
+
     var currencySymbol: String {
-        return Locale.current.localizedCurrencySymbol(forCurrencyCode: currency)!
+        return Locale.current.localizedCurrencySymbol(
+            forCurrencyCode: selectedCurrency.isEmpty ? currency : selectedCurrency)!
     }
 
     @State var showingDatePicker = false
@@ -455,7 +462,20 @@ struct TransactionView: View {
                     VStack(spacing: 8) {
                         NumberPadTextView(
                             price: $price, isEditingDecimal: $isEditingDecimal,
-                            decimalValuesAssigned: $decimalValuesAssigned)
+                            decimalValuesAssigned: $decimalValuesAssigned
+                        )
+                        .overlay(alignment: .leading) {
+                            if !apiKey.isEmpty {
+                                Button {
+                                    showCurrencyPicker = true
+                                } label: {
+                                    Text(currencySymbol)
+                                        .font(.system(.largeTitle, design: .rounded))
+                                        .foregroundColor(Color.SubtitleText)
+                                }
+                                .padding(.leading, 16)
+                            }
+                        }
                         NoteView(note: $note, focused: $textFieldFocused)
                     }
                 }
@@ -975,6 +995,9 @@ struct TransactionView: View {
                 swipingOffset = capsuleWidth
             }
         }
+        .sheet(isPresented: $showCurrencyPicker) {
+            CurrencyPickerView(selectedCurrency: $selectedCurrency, showPicker: $showCurrencyPicker)
+        }
     }
 
     func isDateToday(date: Date) -> Bool {
@@ -1045,9 +1068,7 @@ struct TransactionView: View {
             toastTitle = "Incomplete Entry"
             showToast = true
             toggleFieldColors()
-
             generator.notificationOccurred(.error)
-
             return
         } else if price == 0 {
             toastImage = "centsign.circle"
@@ -1059,9 +1080,7 @@ struct TransactionView: View {
             toastImage = "tray"
             toastTitle = "Missing Category"
             showToast = true
-
             toggleFieldColors()
-
             generator.notificationOccurred(.error)
             return
         }
@@ -1079,79 +1098,95 @@ struct TransactionView: View {
                 editedTransaction.category = unwrappedCategory
             }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                withAnimation(.easeInOut(duration: 0.5)) {
-                    editedTransaction.amount = price
-                    editedTransaction.date = date
-                    editedTransaction.income = income
+            editedTransaction.amount = price
+            editedTransaction.date = date
+            editedTransaction.income = income
+            editedTransaction.recurringType = Int16(repeatType)
+            editedTransaction.recurringCoefficient = Int16(repeatCoefficient)
 
-                    let calendar = Calendar(identifier: .gregorian)
-
-                    editedTransaction.day =
-                        calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date) ?? Date.now
-
-                    let dateComponents = calendar.dateComponents([.month, .year], from: date)
-
-                    editedTransaction.month = calendar.date(from: dateComponents) ?? Date.now
-
-                    if repeatType > 0 {
-                        editedTransaction.onceRecurring = true
-                        editedTransaction.recurringType = Int16(repeatType)
-                        editedTransaction.recurringCoefficient = Int16(repeatCoefficient)
-
-                        dataController.updateRecurringTransaction(transaction: editedTransaction)
-                    } else {
-                        editedTransaction.onceRecurring = false
-                        editedTransaction.recurringType = Int16(repeatType)
-                        editedTransaction.recurringCoefficient = Int16(repeatCoefficient)
-                    }
-
-                    dataController.save()
-                }
-            }
-
+            try? moc.save()
             dismiss()
-
             return
         }
 
         let transaction = Transaction(context: moc)
 
+        // Заполняем основные данные транзакции
         if note.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
-            transaction.note = category?.wrappedName ?? ""
+            transaction.note = category!.wrappedName
         } else {
             transaction.note = note.trimmingCharacters(in: .whitespaces)
         }
 
+        transaction.category = category
+        transaction.date = date
         transaction.income = income
 
-        if let unwrappedCategory = category {
-            transaction.category = unwrappedCategory
-        }
-
-        transaction.amount = price
-        transaction.date = date
-        transaction.id = UUID()
-
-        let calendar = Calendar(identifier: .gregorian)
-
-        transaction.day =
-            calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date) ?? Date.now
-
+        let calendar = Calendar.current
         let dateComponents = calendar.dateComponents([.month, .year], from: date)
-
         transaction.month = calendar.date(from: dateComponents) ?? Date.now
+
+        // Устанавливаем свойство day для группировки
+        transaction.day = calendar.startOfDay(for: date)
 
         if repeatType > 0 {
             transaction.onceRecurring = true
             transaction.recurringType = Int16(repeatType)
             transaction.recurringCoefficient = Int16(repeatCoefficient)
-            dataController.updateRecurringTransaction(transaction: transaction)
         }
 
-        try? moc.save()
+        // Если выбрана другая валюта, конвертируем сумму
+        if !selectedCurrency.isEmpty && selectedCurrency != currency {
+            ExchangeRatesService.shared.convertCurrency(
+                amount: price,
+                from: selectedCurrency,
+                to: currency
+            ) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let convertedAmount):
+                        transaction.amount = convertedAmount
+                    case .failure(let error):
+                        print("Error converting currency: \(error)")
+                        self.toastImage = "exclamationmark.triangle"
+                        self.toastTitle = "Currency conversion failed"
+                        self.showToast = true
+                        transaction.amount = price
+                    }
 
-        dismiss()
+                    // Сохраняем транзакцию после конвертации
+                    if self.repeatType > 0 {
+                        self.dataController.updateRecurringTransaction(transaction: transaction)
+                    }
+
+                    do {
+                        try self.moc.save()
+                        self.dismiss()
+                    } catch {
+                        print("Failed to save transaction: \(error)")
+                        self.toastImage = "exclamationmark.triangle"
+                        self.toastTitle = "Failed to save transaction"
+                        self.showToast = true
+                    }
+                }
+            }
+        } else {
+            // Если валюта не менялась, сохраняем сразу
+            transaction.amount = price
+            if repeatType > 0 {
+                dataController.updateRecurringTransaction(transaction: transaction)
+            }
+
+            do {
+                try moc.save()
+                dismiss()
+            } catch {
+                print("Failed to save transaction: \(error)")
+                toastImage = "exclamationmark.triangle"
+                toastTitle = "Failed to save transaction"
+                showToast = true
+            }
+        }
     }
 
     init(toEdit: Transaction? = nil) {
@@ -1871,5 +1906,55 @@ struct ButtonView: View {
             .background(Color.SecondaryBackground)
             .foregroundColor(Color.PrimaryText)
             .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+struct CurrencyPickerView: View {
+    @Binding var selectedCurrency: String
+    @Binding var showPicker: Bool
+    @Environment(\.presentationMode) var presentationMode
+
+    let currencies = Currency.allCurrencies
+
+    func flagEmoji(for countryCode: String) -> String {
+        let base: UInt32 = 127397
+        var emoji = ""
+        for scalar in countryCode.unicodeScalars {
+            emoji.append(String(UnicodeScalar(base + scalar.value)!))
+        }
+        return emoji
+    }
+
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(currencies, id: \.code) { currency in
+                    Button(action: {
+                        selectedCurrency = currency.code
+                        showPicker = false
+                    }) {
+                        HStack {
+                            Text(flagEmoji(for: String(currency.code.prefix(2))))
+                                .font(.title2)
+                            Text(currency.code)
+                                .foregroundColor(.primary)
+                            Text(currency.symbol)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            if currency.code == selectedCurrency {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select Currency")
+            .navigationBarItems(
+                trailing: Button("Cancel") {
+                    showPicker = false
+                }
+            )
+        }
     }
 }

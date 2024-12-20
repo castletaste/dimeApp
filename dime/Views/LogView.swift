@@ -8,9 +8,9 @@
 import CloudKitSyncMonitor
 import CoreData
 import Foundation
-import SwiftUIIntrospect
 import Popovers
 import SwiftUI
+import SwiftUIIntrospect
 
 struct LogView: View {
     @ObservedObject var syncMonitor = SyncMonitor.shared
@@ -691,32 +691,35 @@ struct SearchView: View {
             HStack(spacing: 9) {
                 HStack {
                     Image(systemName: "magnifyingglass")
-                        //                        .font(.system(size: 17))
                         .font(.system(.body, design: .rounded).weight(.regular))
                         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                         .foregroundColor(Color.DarkIcon.opacity(0.8))
                         .accessibility(hidden: true)
                     TextField("Search entry by note", text: $searchQuery)
-                        .introspectTextField { textField in
-                            textField.becomeFirstResponder()
-                        }
                         .font(.system(.body, design: .rounded).weight(.regular))
                         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-                        //                        .font(.system(size: 17, weight: .regular, design: .rounded))
                         .foregroundColor(Color.PrimaryText)
-
-                    if searchQuery != "" {
-                        Button {
-                            searchQuery = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.system(.subheadline, design: .rounded).weight(.regular))
-                                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-                                //                                .font(.system(size: 15))
-                                .foregroundColor(Color.SubtitleText)
-                                .background(Color.SecondaryBackground)
+                        .submitLabel(.search)
+                        .onAppear {
+                            DispatchQueue.main.async {
+                                UIApplication.shared.sendAction(
+                                    #selector(UIResponder.becomeFirstResponder), to: nil, from: nil,
+                                    for: nil)
+                            }
                         }
-                    }
+
+                    //    if searchQuery != "" {
+                    //        Button {
+                    //            searchQuery = ""
+                    //        } label: {
+                    //            Image(systemName: "xmark.circle.fill")
+                    //                .font(.system(.subheadline, design: .rounded).weight(.regular))
+                    //                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+                    //                //                                .font(.system(size: 15))
+                    //                .foregroundColor(Color.SubtitleText)
+                    //                .background(Color.SecondaryBackground)
+                    //        }
+                    //    }
                 }
                 .padding(6)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -1280,7 +1283,6 @@ struct FutureListView: View {
             format: "%K > %i", #keyPath(Transaction.recurringType), 0)
         let futurePredicate = NSPredicate(
             format: "%K > %@", #keyPath(Transaction.date), Date.now as CVarArg)
-
         let andPredicate = NSCompoundPredicate(
             type: .or, subpredicates: [recurringPredicate, futurePredicate])
 
@@ -1765,7 +1767,6 @@ struct FilteredRecurringView: View {
             format: "%K = %d", #keyPath(Transaction.onceRecurring), true)
         let datePredicate = NSPredicate(
             format: "%K <= %@", #keyPath(Transaction.date), Date.now as CVarArg)
-
         let andPredicate = NSCompoundPredicate(
             type: .and, subpredicates: [recurringPredicate, datePredicate])
 
@@ -2121,7 +2122,6 @@ struct IncomeFilterToggleView: View {
                 .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 .foregroundColor(income == false ? Color.PrimaryText : Color.SubtitleText)
                 .padding(5.5)
-                .padding(.horizontal, 8)
                 .background {
                     if income == false {
                         Capsule()
@@ -2144,7 +2144,6 @@ struct IncomeFilterToggleView: View {
                 .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 .foregroundColor(income == true ? Color.PrimaryText : Color.SubtitleText)
                 .padding(5.5)
-                .padding(.horizontal, 8)
                 .background {
                     if income == true {
                         Capsule()

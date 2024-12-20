@@ -319,6 +319,12 @@ struct SettingsView: View {
               NavigationLink(destination: SettingsEraseView()) {
                 SettingsRowView(systemImage: "xmark.bin.fill", title: "Erase Data", colour: 114)
               }
+
+              NavigationLink(destination: SettingsExchangeRateView()) {
+                SettingsRowView(
+                  systemImage: "dollarsign.arrow.circlepath", title: "Exchange Rate API",
+                  colour: 112)
+              }
             }
             .padding(10)
             .background(Color.SettingsBackground, in: RoundedRectangle(cornerRadius: 9))
